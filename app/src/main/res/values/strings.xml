@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PlasTech</string>
+    <string name="title_activity_menu">Menu</string>
+    <string name="title_home">Home</string>
+    <string name="title_monitoring">Monitoring</string>
+    <string name="title_updates">Updates</string>
+    <string name="title_profile">Me</string>
+</resources>

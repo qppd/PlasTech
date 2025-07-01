@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.qppd.plastech.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_monitor"
+        android:name="com.qppd.plastech.ui.monitor.MonitorFragment"
+        android:label="@string/title_monitoring"
+        tools:layout="@layout/fragment_monitor" />
+
+    <fragment
+        android:id="@+id/navigation_update"
+        android:name="com.qppd.plastech.ui.update.UpdateFragment"
+        android:label="@string/title_updates"
+        tools:layout="@layout/fragment_update" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.qppd.plastech.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+</navigation>

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "656812179076",
+    "project_id": "plastech-5436f",
+    "storage_bucket": "plastech-5436f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656812179076:android:ae9cdcc14095f5eb22ccd1",
+        "android_client_info": {
+          "package_name": "com.qppd.plastech"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx9r5gmNMgi8V7CkuY868UA9VaSPzdMMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
