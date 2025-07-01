@@ -7,12 +7,12 @@
         android:title="@string/title_home" />
 
     <item
-        android:id="@+id/navigation_monitoring"
+        android:id="@+id/navigation_monitor"
         android:icon="@drawable/ic_baseline_eye"
         android:title="@string/title_monitoring" />
 
     <item
-        android:id="@+id/navigation_updates"
+        android:id="@+id/navigation_update"
         android:icon="@drawable/ic_baseline_update"
         android:title="@string/title_updates" />
 

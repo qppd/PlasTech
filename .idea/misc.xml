@@ -3,16 +3,18 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/drawable/rectangle_round_brown.xml" value="0.1635" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/drawable/rectangle_round_main_dark.xml" value="0.1" />
+        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/drawable/rectangle_round_white.xml" value="0.1635" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/actionbar_dashboard.xml" value="0.3901734104046243" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/activity_dashboard.xml" value="0.17" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/activity_login.xml" value="0.15" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/activity_menu.xml" value="0.17" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/activity_register.xml" value="0.15" />
-        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_home.xml" value="0.11282894736842106" />
+        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_home.xml" value="0.17" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_monitor.xml" value="0.11282894736842106" />
-        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_profile.xml" value="0.11282894736842106" />
+        <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_profile.xml" value="0.15" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_udate.xml" value="0.11282894736842106" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/layout/fragment_update.xml" value="0.11282894736842106" />
         <entry key="..\:/AndroidStudioProjects/PlasTech/app/src/main/res/menu/bottom_nav_menu.xml" value="0.11282894736842106" />
