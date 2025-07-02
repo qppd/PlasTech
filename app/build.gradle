@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.github.ViksaaSkool:AwesomeSplash:v1.0.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'io.github.b-sahana:horizontalcalendar:1.2.2'
+    implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.github.yalantis:ucrop:2.2.8'
 
     implementation 'com.google.firebase:firebase-database-ktx:19.7.0'
     implementation 'com.google.firebase:firebase-auth:22.1.2'

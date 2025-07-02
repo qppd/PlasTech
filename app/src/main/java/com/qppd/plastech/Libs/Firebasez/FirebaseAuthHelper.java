@@ -1,11 +1,15 @@
 package com.qppd.plastech.Libs.Firebasez;
 
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.AuthResult;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
 import androidx.annotation.NonNull;
+
+import java.util.List;
 
 public class FirebaseAuthHelper {
     private FirebaseAuth firebaseAuth;
@@ -16,11 +20,13 @@ public class FirebaseAuthHelper {
 
     public interface AuthCallback {
         void onSuccess(FirebaseUser user);
+
         void onFailure(Exception e);
     }
 
     public interface ResetCallback {
         void onSuccess();
+
         void onFailure(Exception e);
     }
 
@@ -76,4 +82,23 @@ public class FirebaseAuthHelper {
     public FirebaseUser getCurrentUser() {
         return firebaseAuth.getCurrentUser();
     }
+
+    public Task<Boolean> checkIfEmailExists(String email) {
+        TaskCompletionSource<Boolean> taskSource = new TaskCompletionSource<>();
+
+        firebaseAuth.fetchSignInMethodsForEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        List<String> signInMethods = task.getResult().getSignInMethods();
+                        boolean exists = signInMethods != null && !signInMethods.isEmpty();
+                        taskSource.setResult(exists);
+                    } else {
+                        taskSource.setException(task.getException());
+                    }
+                });
+
+        return taskSource.getTask();
+    }
+
+
 }
