@@ -28,9 +28,6 @@
             app:setDateTextSize="22sp"
             app:setWeekTextSize="13sp"
             app:setMonthTextSize="17sp"
-            app:setDateFontStyle="fonts/Light.otf"
-            app:setLabelFontStyle="bold"
-            app:setMonthFontStyle="bold"
             app:setLabel="My Calendar" />
 
         <LinearLayout

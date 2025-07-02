@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.view.Menu;
+
 import androidx.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -72,14 +74,9 @@ public class LoginTask extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean success) {
         if (success) {
 
-            if (UserGlobal.getUser().getStatus() == 0) {
-                firebaseAuthHelper.logout();
-                function.showMessage("Failed to login! Account locked!");
-            } else {
-                function.showMessage("LOGIN SUCCESS!");
-                IntentManagerClass.intentsify(((Activity) context), MenuActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                ((Activity) context).finish();
-            }
+            function.showMessage("LOGIN SUCCESS!");
+            IntentManagerClass.intentsify(((Activity) context), MenuActivity.class, Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            ((Activity) context).finish();
 
         } else {
             function.showMessage("LOGIN FAILED!");

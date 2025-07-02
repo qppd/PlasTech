@@ -119,9 +119,13 @@ public class ValidatorClass {
     }
 
     public static boolean validatePhoneOnly(String number) {
-        String cleanedNumber = number.replaceAll("[^0-9]", "");
-        return cleanedNumber.matches("(09|\\+639)\\d{9}");
+        // Remove spaces, dashes, and parentheses but keep +
+        String cleanedNumber = number.replaceAll("[\\s\\-()]", "");
+
+        // Pattern: starts with 09 or +639 followed by 9 digits
+        return cleanedNumber.matches("^(09|\\+639)\\d{9}$");
     }
+
 
 
 

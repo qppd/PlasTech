@@ -90,7 +90,7 @@ public class MonitorFragment extends Fragment {
 
                     txtTotalReward.setText(String.format("%02d", bin.getTotal_rewards()));
                     txtTotalWeight.setText(String.format("%02d", bin.getTotal_weight()));
-                    txtTotalWeight.setText(String.format("%02d", bin.getCoin_stock()));
+                    txtCoinStock.setText(String.format("%02d", bin.getCoin_stock()));
 
                 }
             }

@@ -55,10 +55,15 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void initializeComponents() {
 
         edtEmail = findViewById(R.id.edtEmail);
+        edtEmail.setText("sajedhm1@gmail.com");
         edtName = findViewById(R.id.edtName);
+        edtName.setText("Sajed Lopez Mendoza");
         edtPhone = findViewById(R.id.edtPhone);
+        edtPhone.setText("09634905586");
         edtPassword = findViewById(R.id.edtPassword);
+        edtPassword.setText("Jedtala01+");
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
+        edtConfirmPassword.setText("Jedtala01+");
 
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
@@ -106,7 +111,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             edtPhone.setError("Contact no. is required!");
             focusView = edtPhone;
             cancel = true;
-        } else if (!ValidatorClass.validatePhoneOnly(name)) {
+        } else if (!ValidatorClass.validatePhoneOnly(phone)) {
             edtPhone.setError("Contact no. invalid!");
             focusView = edtPhone;
             cancel = true;
@@ -121,8 +126,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             focusView = edtConfirmPassword;
             cancel = true;
         }
-        if (!ValidatorClass.validatePasswordOnly(password)) {
-            edtPassword.setError("Invalid Password! Password must be 6 characters minimum, contains letter, and a number!");
+        if (!ValidatorClass.validatePasswordOnly(confirm_password)) {
+            edtPassword.setError("Invalid Password! Password must be 6 characters minimum, contains letter, number and a symbol!");
             focusView = edtPassword;
             cancel = true;
         } else if (!password.equals(confirm_password)) {
@@ -158,7 +163,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                 @Override
                 public void onFailure(Exception e) {
-
+                    function.showMessage("Registration failed!" + e.getMessage());
                 }
             });
 

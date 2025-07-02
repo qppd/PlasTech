@@ -17,7 +17,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
+            android:layout_marginTop="16dp"
             android:src="@drawable/applogo_no_background"
             android:text="My Profile"
             android:fontFamily="@font/verdanab"
