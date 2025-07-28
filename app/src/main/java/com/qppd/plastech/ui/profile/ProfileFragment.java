@@ -2,6 +2,7 @@ package com.qppd.plastech.ui.profile;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -11,14 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +37,7 @@ import com.qppd.plastech.Globals.UserGlobal;
 import com.qppd.plastech.Libs.Firebasez.FirebaseRTDBHelper;
 import com.qppd.plastech.Libs.Firebasez.FirebaseStorageHelper;
 import com.qppd.plastech.Libs.Functionz.FunctionClass;
+import com.qppd.plastech.LoginActivity;
 import com.qppd.plastech.R;
 import com.qppd.plastech.databinding.FragmentProfileBinding;
 import com.yalantis.ucrop.UCrop;
@@ -224,16 +230,70 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.txtName:
                 break;
             case R.id.imbEditName:
+                showEditNameDialog();
                 break;
             case R.id.cardPickUpTrash:
+                NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
             case R.id.cardHelpCenter:
+                // You can create a new fragment for Help Center and navigate to it.
+                // For now, let's show a toast message.
+                Toast.makeText(context, "Help Center Clicked", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.cardMonitoring:
+                NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);
                 break;
             case R.id.cardRecords:
+                NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
-
+            case R.id.btnLogout:
+                logout();
+                break;
         }
+    }
+
+    private void showEditNameDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_edit_name, null);
+        final EditText etName = dialogView.findViewById(R.id.etName);
+        etName.setText(txtName.getText().toString());
+
+        builder.setView(dialogView)
+                .setPositiveButton("Save", (dialog, id) -> {
+                    String newName = etName.getText().toString().trim();
+                    if (!newName.isEmpty()) {
+                        updateUserName(newName);
+                    } else {
+                        Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void updateUserName(String newName) {
+        userFirebaseRTDBHelper.getRef().child("users/" + UserGlobal.getUser_id() + "/name").setValue(newName)
+                .addOnSuccessListener(aVoid -> {
+                    txtName.setText(newName);
+                    Toast.makeText(context, "Name updated successfully", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Failed to update name", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update name", e);
+                });
+    }
+    
+    private void logout() {
+        // Clear any user session data if stored
+
+        
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        requireActivity().finish();
     }
 }
