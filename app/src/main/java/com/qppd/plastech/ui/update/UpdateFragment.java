@@ -26,6 +26,7 @@ public class UpdateFragment extends Fragment {
 
         TablePagerAdapter adapter = new TablePagerAdapter(requireActivity());
         binding.viewPager.setAdapter(adapter);
+        binding.viewPager.setUserInputEnabled(false);
 
         new TabLayoutMediator(binding.tabLayout, binding.viewPager,
                 (tab, position) -> {

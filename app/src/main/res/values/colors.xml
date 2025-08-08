@@ -14,7 +14,7 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorExtra">#3C6BB8</color>
     <color name="colorBrown">#88b189</color>
-    <color name="colorGray">#ececf1</color>
+    <color name="colorGray">#E0E0E0</color>
 
     <color name="red">#E53935</color>
     <color name="orange">#F4511E</color>
@@ -26,4 +26,22 @@
     <color name="light_green">#7ed957</color>
     <color name="aqua">#00E5FF</color>
     <color name="gray">#bdbdbd</color>
+
+    <color name="selected_background_color">#15a4fa</color>
+    <color name="unselected_background_color">#1c324a</color>
+    <color name="shadow_background_color">#28415f</color>
+    <color name="unselected_header_background_color">#F5F5F5</color>
+
+    <color name="unselected_text_color">#757575</color>
+    <color name="selected_text_color">#ffffff</color>
+    <color name="separator_color">#E0E0E0</color>
+
+    <color name="popup_menu_item_text_color">#88a5c9</color>
+
+    <color name="female_icon_color">#e9515f</color>
+    <color name="male_icon_color">#f28944</color>
+
+    <!-- TableView colors -->
+    <color name="table_view_header_color">#4CAF50</color>
+    <color name="table_view_text_color">#212121</color>
 </resources>

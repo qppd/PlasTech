@@ -33,15 +33,14 @@ public class MonthlyTableFragment extends Fragment {
         PlasticTableAdapter adapter = new PlasticTableAdapter(getContext());
         tableView.setAdapter(adapter);
         tableView.setHasFixedWidth(false);
+        tableView.setRowHeaderWidth(0);
 
         List<String> headers = Arrays.asList("Month", "Overall Weight", "Total number of bottle", "Total amount of reward");
         
-        List<String> rowHeaders = new ArrayList<>();
-        String[] months = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-        rowHeaders.addAll(Arrays.asList(months));
-
         List<List<String>> cells = new ArrayList<>();
         Random random = new Random();
+        String[] months = new String[]{"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+
         for (int i = 0; i < 12; i++) {
             int totalBottles = random.nextInt(500) + 100;
             int overallWeight = totalBottles * (random.nextInt(10) + 5);
@@ -55,6 +54,6 @@ public class MonthlyTableFragment extends Fragment {
             cells.add(cellRow);
         }
 
-        adapter.setAllItems(headers, rowHeaders, cells);
+        adapter.setAllItems(headers, null, cells);
     }
 }

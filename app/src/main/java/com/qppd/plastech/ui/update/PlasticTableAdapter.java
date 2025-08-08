@@ -94,15 +94,6 @@ public class PlasticTableAdapter extends AbstractTableAdapter<String, String, St
             CellViewHolder viewHolder = (CellViewHolder) holder;
             viewHolder.cell_textview.setText(cellItemModel);
         }
-
-        // Set alternating row colors
-        int evenColor = ContextCompat.getColor(context, R.color.white);
-        int oddColor = ContextCompat.getColor(context, R.color.colorGray);
-        holder.itemView.setBackgroundColor(rowPosition % 2 == 0 ? evenColor : oddColor);
-
-        holder.itemView.setOnClickListener(v -> {
-            Toast.makeText(context, "Cell " + columnPosition + "," + rowPosition + " clicked.", Toast.LENGTH_SHORT).show();
-        });
     }
 
     @NonNull
@@ -117,6 +108,8 @@ public class PlasticTableAdapter extends AbstractTableAdapter<String, String, St
     public void onBindColumnHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable String columnHeaderItemModel, int columnPosition) {
         ColumnHeaderViewHolder columnHeaderViewHolder = (ColumnHeaderViewHolder) holder;
         columnHeaderViewHolder.column_header_textView.setText(columnHeaderItemModel);
+        columnHeaderViewHolder.column_header_textView.setTextColor(Color.BLACK);
+        
         holder.itemView.setOnClickListener(v -> {
             Toast.makeText(context, "Column " + columnPosition + " clicked.", Toast.LENGTH_SHORT).show();
         });
@@ -141,17 +134,7 @@ public class PlasticTableAdapter extends AbstractTableAdapter<String, String, St
 
     @Override
     public void onBindRowHeaderViewHolder(@NonNull AbstractViewHolder holder, @Nullable String rowHeaderItemModel, int rowPosition) {
-        RowHeaderViewHolder rowHeaderViewHolder = (RowHeaderViewHolder) holder;
-        rowHeaderViewHolder.row_header_textView.setText(rowHeaderItemModel);
-
-        // Set alternating row colors
-        int evenColor = ContextCompat.getColor(context, R.color.white);
-        int oddColor = ContextCompat.getColor(context, R.color.colorGray);
-        holder.itemView.setBackgroundColor(rowPosition % 2 == 0 ? evenColor : oddColor);
-
-        holder.itemView.setOnClickListener(v -> {
-            Toast.makeText(context, "Row " + rowPosition + " clicked.", Toast.LENGTH_SHORT).show();
-        });
+        // This is not used anymore
     }
 
     @NonNull

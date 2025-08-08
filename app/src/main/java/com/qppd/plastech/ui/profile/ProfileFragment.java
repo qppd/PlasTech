@@ -46,6 +46,7 @@ import com.yalantis.ucrop.model.AspectRatio;
 import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import com.qppd.plastech.HelpActivity;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener {
 
@@ -238,7 +239,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.cardHelpCenter:
                 // You can create a new fragment for Help Center and navigate to it.
                 // For now, let's show a toast message.
-                Toast.makeText(context, "Help Center Clicked", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(context, "Help Center Clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, HelpActivity.class);
+                startActivity(intent);
                 break;
             case R.id.cardMonitoring:
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);

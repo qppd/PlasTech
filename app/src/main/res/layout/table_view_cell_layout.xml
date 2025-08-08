@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cell_data"
     android:layout_width="wrap_content"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/table_view_cell_height"
     android:gravity="center"
-    android:orientation="vertical"
-    android:background="@android:drawable/dialog_holo_light_frame">
-
-    <TextView
-        android:id="@+id/cell_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="8dp"
-        android:textColor="@android:color/black"
-        android:textSize="14sp" />
-
-</LinearLayout> 
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:textColor="@color/table_view_text_color"
+    android:textSize="@dimen/table_view_default_text_size"
+    tools:text="Cell Data" /> 
