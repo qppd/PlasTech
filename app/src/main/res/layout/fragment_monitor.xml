@@ -28,7 +28,16 @@
             app:setDateTextSize="22sp"
             app:setWeekTextSize="13sp"
             app:setMonthTextSize="17sp"
-            app:setLabel="My Calendar" />
+            app:setLabel="Select Date to View Data" />
+
+        <!-- Loading Indicator -->
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginVertical="16dp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

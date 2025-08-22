@@ -11,4 +11,35 @@
     <string name="clear_sorting">Clear</string>
     <string name="row_show">Show 5. Row</string>
     <string name="row_hide">Hide 5. Row</string>
+
+    <!-- Home Fragment Strings -->
+    <string name="home_welcome_message">Good %1$s, %2$s!</string>
+    <string name="home_welcome_default">Welcome to PlasTech!</string>
+    <string name="home_my_earnings">My Earnings</string>
+    <string name="home_total_earned">Total Earned</string>
+    <string name="home_today_earned">Today</string>
+    <string name="home_this_week">This Week</string>
+    <string name="home_this_month">This Month</string>
+    <string name="home_recent_activities">Recent Activities</string>
+    <string name="home_view_all">View All</string>
+    <string name="home_no_activities">No recent activities</string>
+    <string name="home_notifications">Notifications</string>
+    <string name="home_tip_of_day">Tip of the Day</string>
+    <string name="home_user_level">Your Level</string>
+    <string name="home_progress_to_next">Progress to ₱%1$.0f milestone</string>
+    <string name="home_milestone_reached">₱%1$.0f milestone reached!</string>
+    <string name="home_loading">Loading...</string>
+    <string name="home_refresh">Pull to refresh</string>
+    <string name="home_error_loading">Error loading data</string>
+    
+    <!-- Time greetings -->
+    <string name="greeting_morning">morning</string>
+    <string name="greeting_afternoon">afternoon</string>
+    <string name="greeting_evening">evening</string>
+    
+    <!-- Quick actions -->
+    <string name="quick_action_recycle">Recycle Now</string>
+    <string name="quick_action_monitor">Check Status</string>
+    <string name="quick_action_profile">My Profile</string>
+    <string name="quick_action_records">View Records</string>
 </resources>

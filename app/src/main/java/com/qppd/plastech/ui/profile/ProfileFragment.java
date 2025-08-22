@@ -11,9 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,7 +25,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,11 +37,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
+import com.qppd.plastech.Classes.ActivityLog;
 import com.qppd.plastech.Classes.User;
 import com.qppd.plastech.Globals.UserGlobal;
+import com.qppd.plastech.Libs.DateTimez.DateTimeClass;
+import com.qppd.plastech.Libs.Firebasez.FirebaseAuthHelper;
 import com.qppd.plastech.Libs.Firebasez.FirebaseRTDBHelper;
 import com.qppd.plastech.Libs.Firebasez.FirebaseStorageHelper;
 import com.qppd.plastech.Libs.Functionz.FunctionClass;
+import com.qppd.plastech.Libs.Validatorz.ValidatorClass;
 import com.qppd.plastech.LoginActivity;
 import com.qppd.plastech.R;
 import com.qppd.plastech.databinding.FragmentProfileBinding;
@@ -44,6 +53,11 @@ import com.yalantis.ucrop.UCrop;
 import com.yalantis.ucrop.model.AspectRatio;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import com.qppd.plastech.HelpActivity;
@@ -56,19 +70,35 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private View root;
     private Context context;
 
+    private ProfileViewModel profileViewModel;
     private FirebaseStorageHelper firebaseStorageHelper = new FirebaseStorageHelper();
     private FirebaseRTDBHelper<User> userFirebaseRTDBHelper = new FirebaseRTDBHelper<>("plastech");
+    private FirebaseRTDBHelper<ActivityLog> activityLogHelper = new FirebaseRTDBHelper<>("plastech");
+    private FirebaseAuthHelper firebaseAuthHelper = new FirebaseAuthHelper();
     private FunctionClass function;
+    private DateTimeClass dateTime = new DateTimeClass("MM/dd/yyyy HH:mm:ss");
 
     private ActivityResultLauncher<Intent> galleryLauncher;
     private ActivityResultLauncher<Intent> uCropLauncher;
     private Uri imageUri;
 
+    // UI Components
     private CircleImageView civProfilePhoto;
     private ImageView imbUploadProfilePhoto;
 
     private TextView txtName;
     private ImageView imbEditName;
+    private TextView txtEmail;
+    private ImageView imbEditEmail;
+    private TextView txtPhone;
+    private ImageView imbEditPhone;
+    private TextView txtRegistrationDate;
+    private TextView txtStatus;
+
+    private RecyclerView recyclerViewActivities;
+    private TextView txtViewAllActivities;
+    private TextView txtNoActivities;
+    private ProgressBar progressBarActivities;
 
     private CardView cardPickUpTrash;
     private CardView cardHelpCenter;
@@ -76,6 +106,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private CardView cardRecords;
 
     private Button btnLogout;
+
+    private ActivityLogAdapter activityLogAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -85,10 +117,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         context = root.getContext();
 
         function = new FunctionClass(context);
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
 
         initializeComponents();
+        setupObservers();
+        setupRecyclerView();
         loadProfilePhoto();
-        loadUser();
+        
+        // Load data
+        profileViewModel.loadUserProfile();
+        profileViewModel.loadActivityLogs();
 
         return root;
     }
@@ -103,6 +141,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         imbEditName = root.findViewById(R.id.imbEditName);
         imbEditName.setOnClickListener(this);
 
+        txtEmail = root.findViewById(R.id.txtEmail);
+        imbEditEmail = root.findViewById(R.id.imbEditEmail);
+        imbEditEmail.setOnClickListener(this);
+
+        txtPhone = root.findViewById(R.id.txtPhone);
+        imbEditPhone = root.findViewById(R.id.imbEditPhone);
+        imbEditPhone.setOnClickListener(this);
+
+        txtRegistrationDate = root.findViewById(R.id.txtRegistrationDate);
+        txtStatus = root.findViewById(R.id.txtStatus);
+
+        recyclerViewActivities = root.findViewById(R.id.recyclerViewActivities);
+        txtViewAllActivities = root.findViewById(R.id.txtViewAllActivities);
+        txtViewAllActivities.setOnClickListener(this);
+        txtNoActivities = root.findViewById(R.id.txtNoActivities);
+        progressBarActivities = root.findViewById(R.id.progressBarActivities);
+
         cardPickUpTrash = root.findViewById(R.id.cardPickUpTrash);
         cardPickUpTrash.setOnClickListener(this);
         cardHelpCenter = root.findViewById(R.id.cardHelpCenter);
@@ -114,6 +169,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         btnLogout = root.findViewById(R.id.btnLogout);
         btnLogout.setOnClickListener(this);
+
+        // Add click listener for profile photo animation
+        civProfilePhoto.setOnClickListener(this);
 
         galleryLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
             if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
@@ -137,7 +195,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 Uri croppedImageUri = UCrop.getOutput(result.getData());
                 if (croppedImageUri != null) {
                     function.showMessage("Uploading");
-
+                    logActivity("Profile Picture Update", "Updated profile picture", "Completed");
                     uploadImage(croppedImageUri, "images/" + UserGlobal.getUser_id(), civProfilePhoto);
                 }
             } else if (result.getResultCode() == UCrop.RESULT_ERROR) {
@@ -145,8 +203,81 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 function.showMessage("Cropping failed: " + (cropError != null ? cropError.getMessage() : "Unknown error"));
             }
         });
+    }
 
+    private void setupObservers() {
+        profileViewModel.getUserLiveData().observe(getViewLifecycleOwner(), user -> {
+            if (user != null) {
+                updateUserUI(user);
+            }
+        });
 
+        profileViewModel.getActivityLogsLiveData().observe(getViewLifecycleOwner(), activityLogs -> {
+            if (activityLogs != null) {
+                updateActivityLogsUI(activityLogs);
+            }
+        });
+
+        profileViewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null) {
+                progressBarActivities.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            }
+        });
+
+        profileViewModel.getErrorMessageLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
+            if (errorMessage != null && !errorMessage.isEmpty()) {
+                function.showMessage(errorMessage);
+            }
+        });
+    }
+
+    private void setupRecyclerView() {
+        activityLogAdapter = new ActivityLogAdapter();
+        recyclerViewActivities.setLayoutManager(new LinearLayoutManager(context));
+        recyclerViewActivities.setAdapter(activityLogAdapter);
+    }
+
+    private void updateUserUI(User user) {
+        txtName.setText(user.getName());
+        txtEmail.setText(user.getEmail());
+        txtPhone.setText(user.getContact());
+        
+        // Format registration date
+        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
+        SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+        try {
+            Date date = inputFormat.parse(user.getCreated_at());
+            txtRegistrationDate.setText("Member since: " + outputFormat.format(date));
+        } catch (Exception e) {
+            txtRegistrationDate.setText("Member since: " + user.getCreated_at());
+        }
+
+        // Set status
+        String statusText = user.getStatus() == 1 ? "Active" : "Inactive";
+        txtStatus.setText(statusText);
+        
+        // Animate the profile card
+        civProfilePhoto.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
+    }
+
+    private void updateActivityLogsUI(List<ActivityLog> activityLogs) {
+        if (activityLogs.isEmpty()) {
+            txtNoActivities.setVisibility(View.VISIBLE);
+            recyclerViewActivities.setVisibility(View.GONE);
+        } else {
+            txtNoActivities.setVisibility(View.GONE);
+            recyclerViewActivities.setVisibility(View.VISIBLE);
+            
+            // Show only recent 3 activities
+            List<ActivityLog> recentActivities = activityLogs.size() > 3 ? 
+                activityLogs.subList(0, 3) : activityLogs;
+            activityLogAdapter.setActivityLogs(recentActivities);
+            
+            // Animate the recycler view
+            recyclerViewActivities.startAnimation(
+                AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
+        }
     }
 
     private void loadProfilePhoto(){
@@ -195,25 +326,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void loadUser() {
-        userFirebaseRTDBHelper.getRef().child("users/" + UserGlobal.getUser_id())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
-                    User user =  snapshot.getValue(User.class);
-                    txtName.setText(user.getName());
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -224,7 +336,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.civProfilePhoto:
-                 break;
+                // Profile picture animation
+                civProfilePhoto.startAnimation(
+                    AnimationUtils.loadAnimation(context, R.anim.profile_photo_animation));
+                break;
             case R.id.imbUploadProfilePhoto:
                 openGallery();
                 break;
@@ -233,13 +348,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.imbEditName:
                 showEditNameDialog();
                 break;
+            case R.id.imbEditEmail:
+                showEditEmailDialog();
+                break;
+            case R.id.imbEditPhone:
+                showEditPhoneDialog();
+                break;
+            case R.id.txtViewAllActivities:
+                // Navigate to full activity logs screen
+                // You can implement this navigation later
+                function.showMessage("View all activities feature coming soon!");
+                break;
             case R.id.cardPickUpTrash:
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
             case R.id.cardHelpCenter:
-                // You can create a new fragment for Help Center and navigate to it.
-                // For now, let's show a toast message.
-                // Toast.makeText(context, "Help Center Clicked", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, HelpActivity.class);
                 startActivity(intent);
                 break;
@@ -250,9 +373,158 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
             case R.id.btnLogout:
-                logout();
+                showLogoutDialog();
                 break;
         }
+    }
+
+    private void showEditEmailDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_edit_email, null);
+        final EditText etEmail = dialogView.findViewById(R.id.etEmail);
+        etEmail.setText(txtEmail.getText().toString());
+
+        builder.setView(dialogView)
+                .setPositiveButton("Save", (dialog, id) -> {
+                    String newEmail = etEmail.getText().toString().trim();
+                    if (!newEmail.isEmpty() && ValidatorClass.validateEmailOnly(newEmail)) {
+                        updateUserEmail(newEmail);
+                    } else {
+                        Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void showEditPhoneDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_edit_phone, null);
+        final EditText etPhone = dialogView.findViewById(R.id.etPhone);
+        etPhone.setText(txtPhone.getText().toString());
+
+        builder.setView(dialogView)
+                .setPositiveButton("Save", (dialog, id) -> {
+                    String newPhone = etPhone.getText().toString().trim();
+                    if (!newPhone.isEmpty() && ValidatorClass.validatePhoneOnly(newPhone)) {
+                        updateUserPhone(newPhone);
+                    } else {
+                        Toast.makeText(context, "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void updateUserEmail(String newEmail) {
+        User currentUser = UserGlobal.getUser();
+        if (currentUser != null) {
+            currentUser.setEmail(newEmail);
+            profileViewModel.updateUserProfile(currentUser, new ProfileViewModel.ProfileUpdateCallback() {
+                @Override
+                public void onSuccess() {
+                    txtEmail.setText(newEmail);
+                    Toast.makeText(context, "Email updated successfully", Toast.LENGTH_SHORT).show();
+                    logActivity("Profile Update", "Updated email address", "Completed");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(context, "Failed to update email", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update email", e);
+                }
+            });
+        }
+    }
+
+    private void updateUserPhone(String newPhone) {
+        User currentUser = UserGlobal.getUser();
+        if (currentUser != null) {
+            currentUser.setContact(newPhone);
+            profileViewModel.updateUserProfile(currentUser, new ProfileViewModel.ProfileUpdateCallback() {
+                @Override
+                public void onSuccess() {
+                    txtPhone.setText(newPhone);
+                    Toast.makeText(context, "Phone number updated successfully", Toast.LENGTH_SHORT).show();
+                    logActivity("Profile Update", "Updated phone number", "Completed");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(context, "Failed to update phone number", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update phone number", e);
+                }
+            });
+        }
+    }
+
+    private void updateUserName(String newName) {
+        User currentUser = UserGlobal.getUser();
+        if (currentUser != null) {
+            currentUser.setName(newName);
+            profileViewModel.updateUserProfile(currentUser, new ProfileViewModel.ProfileUpdateCallback() {
+                @Override
+                public void onSuccess() {
+                    txtName.setText(newName);
+                    Toast.makeText(context, "Name updated successfully", Toast.LENGTH_SHORT).show();
+                    logActivity("Profile Update", "Updated name", "Completed");
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Toast.makeText(context, "Failed to update name", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Failed to update name", e);
+                }
+            });
+        }
+    }
+
+    private void logActivity(String action, String description, String status) {
+        String activityId = "activity_" + System.currentTimeMillis();
+        ActivityLog activityLog = new ActivityLog(
+            activityId,
+            UserGlobal.getUser_id(),
+            action,
+            description,
+            dateTime.getFormattedTime(),
+            status
+        );
+
+        activityLogHelper.save("activity_logs/" + UserGlobal.getUser_id() + "/" + activityId, 
+            activityLog, new FirebaseRTDBHelper.DatabaseCallback() {
+                @Override
+                public void onSuccess() {
+                    // Refresh activity logs
+                    profileViewModel.loadActivityLogs();
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    Log.e(TAG, "Failed to log activity", e);
+                }
+            });
+    }
+
+    private void showLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("Logout")
+                .setMessage("Are you sure you want to logout?")
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    logout();
+                })
+                .setNegativeButton("Cancel", (dialog, id) -> {
+                    dialog.cancel();
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void showEditNameDialog() {
@@ -265,10 +537,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         builder.setView(dialogView)
                 .setPositiveButton("Save", (dialog, id) -> {
                     String newName = etName.getText().toString().trim();
-                    if (!newName.isEmpty()) {
+                    if (!newName.isEmpty() && ValidatorClass.validateLetterOnly(newName)) {
                         updateUserName(newName);
                     } else {
-                        Toast.makeText(context, "Name cannot be empty", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "Please enter a valid name", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("Cancel", (dialog, id) -> {
@@ -277,22 +549,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
     }
-
-    private void updateUserName(String newName) {
-        userFirebaseRTDBHelper.getRef().child("users/" + UserGlobal.getUser_id() + "/name").setValue(newName)
-                .addOnSuccessListener(aVoid -> {
-                    txtName.setText(newName);
-                    Toast.makeText(context, "Name updated successfully", Toast.LENGTH_SHORT).show();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(context, "Failed to update name", Toast.LENGTH_SHORT).show();
-                    Log.e(TAG, "Failed to update name", e);
-                });
-    }
     
     private void logout() {
-        // Clear any user session data if stored
-
+        // Log the logout activity
+        logActivity("Logout", "User logged out from the application", "Completed");
+        
+        // Clear user session data
+        UserGlobal.setUser(null);
+        UserGlobal.setUser_id(null);
+        
+        // Sign out from Firebase
+        firebaseAuthHelper.logout();
         
         Intent intent = new Intent(context, LoginActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

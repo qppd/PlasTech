@@ -1,8 +1,15 @@
 package com.qppd.plastech.Libs.Firebasez;
 
+import androidx.annotation.NonNull;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class FirebaseRTDBHelper<T> {
@@ -30,6 +37,16 @@ public class FirebaseRTDBHelper<T> {
 
     public interface PushCallback extends DatabaseCallback {
         void onKeyReceived(String key);
+    }
+
+    public interface DataCallback<T> {
+        void onSuccess(T data);
+        void onFailure(Exception e);
+    }
+
+    public interface ListCallback<T> {
+        void onSuccess(List<T> dataList);
+        void onFailure(Exception e);
     }
 
     public void save(String key, T object, DatabaseCallback callback) {
@@ -65,5 +82,45 @@ public class FirebaseRTDBHelper<T> {
         databaseReference.child(key).updateChildren(updates)
                 .addOnSuccessListener(aVoid -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    public void get(String key, Class<T> clazz, DataCallback<T> callback) {
+        databaseReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    T object = snapshot.getValue(clazz);
+                    callback.onSuccess(object);
+                } else {
+                    callback.onFailure(new Exception("Data not found"));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.toException());
+            }
+        });
+    }
+
+    public void getList(String key, Class<T> clazz, ListCallback<T> callback) {
+        databaseReference.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<T> dataList = new ArrayList<>();
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    T object = childSnapshot.getValue(clazz);
+                    if (object != null) {
+                        dataList.add(object);
+                    }
+                }
+                callback.onSuccess(dataList);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.toException());
+            }
+        });
     }
 }
