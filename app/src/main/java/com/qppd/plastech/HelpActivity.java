@@ -21,22 +21,26 @@ public class HelpActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("Help Center");
 
+        TextView faqSection = findViewById(R.id.faq_section);
         TextView helpContent = findViewById(R.id.help_content);
+        TextView contactSection = findViewById(R.id.contact_section);
+        TextView contactInfo = findViewById(R.id.contact_info);
 
-        String helpText = "<h2>Frequently Asked Questions (FAQ)</h2>" +
-                "<b>Q: How do I use the reverse vending machine?</b><br>" +
-                "A: Simply bring your clean plastic bottles to the machine, log in to your account using the app, and deposit the bottles into the designated slot. The machine will automatically weigh and record your contribution.<br><br>" +
+        String faqText = "<b>Q: How do I use the reverse vending machine?</b><br>" +
+                "A: Bring your clean plastic bottles to the machine, log in to your account, and deposit the bottles. The machine will weigh and record your contribution.<br><br>" +
                 "<b>Q: How are my points calculated?</b><br>" +
-                "A: You earn points based on the weight of the plastic you deposit. You can track your points in the 'Updates' section of the app.<br><br>" +
-                "<b>Q: How do I redeem my rewards?</b><br>" +
-                "A: Once you have accumulated enough points, you can redeem them for various rewards available in the 'Rewards' section.<br><br>" +
-                "<h2>Contact Us</h2>" +
-                "If you have any other questions or need further assistance, please feel free to contact our support team at ";
+                "A: Points are based on the weight of the plastic you deposit. Track your points in the 'Updates' section.<br><br>" +
+                "<b>Q: How do I redeem rewards?</b><br>" +
+                "A: Redeem points for rewards in the 'Rewards' section.";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            helpContent.setText(Html.fromHtml(helpText, Html.FROM_HTML_MODE_LEGACY));
+            helpContent.setText(Html.fromHtml(faqText, Html.FROM_HTML_MODE_LEGACY));
+        } else {
+            helpContent.setText(Html.fromHtml(faqText));
         }
         helpContent.setMovementMethod(LinkMovementMethod.getInstance());
+
+        contactInfo.setText("For further assistance, email us at support@plastech.com");
     }
 
     @Override
@@ -44,4 +48,4 @@ public class HelpActivity extends AppCompatActivity {
         onBackPressed();
         return true;
     }
-} 
+}

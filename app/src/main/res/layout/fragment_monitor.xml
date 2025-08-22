@@ -20,6 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:layout_marginBottom="?attr/actionBarSize"
         app:layout_constraintTop_toBottomOf="@id/toolbar_actionbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
@@ -200,7 +201,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="64sp" />
+                                    android:textSize="54sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -246,7 +247,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="64sp" />
+                                    android:textSize="54sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -317,7 +318,7 @@
                             android:gravity="center"
                             android:text="00"
                             android:textColor="@color/white"
-                            android:textSize="64sp" />
+                            android:textSize="54sp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -365,7 +366,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="64sp" />
+                                    android:textSize="54sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -459,7 +460,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="64sp" />
+                                    android:textSize="54sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -505,7 +506,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="64sp" />
+                                    android:textSize="54sp" />
 
                                 <View
                                     android:layout_width="match_parent"

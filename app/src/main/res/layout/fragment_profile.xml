@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorGrayLight"
+
     tools:context=".ui.profile.ProfileFragment">
 
     <include 
@@ -15,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
+        android:layout_marginBottom="?attr/actionBarSize"
         app:layout_constraintTop_toBottomOf="@id/toolbar_actionbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
