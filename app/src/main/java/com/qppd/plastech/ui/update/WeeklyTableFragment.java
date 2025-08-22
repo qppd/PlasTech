@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
+import com.qppd.plastech.data.SharedRepository;
 
 public class WeeklyTableFragment extends Fragment {
     private TableView tableView;
+    private final SharedRepository sharedRepository = SharedRepository.getInstance();
 
     @Nullable
     @Override
@@ -34,23 +36,57 @@ public class WeeklyTableFragment extends Fragment {
         tableView.setHasFixedWidth(false);
         tableView.setRowHeaderWidth(0);
 
-        List<String> headers = Arrays.asList("No. of Week", "Small Bottle", "Large Bottle", "Overall Weight", "Total no. of bottles", "Total amount of reward");
+        sharedRepository.getEarningsLiveData().observe(getViewLifecycleOwner(), earnings -> {
+            if (earnings != null) {
+                // Update table data based on earnings
+                // Example: adapter.updateData(earnings);
+            }
+        });
+
+        List<String> headers = Arrays.asList("Week", "Small Bottles", "Large Bottles", "Overall Weight", "Total Bottles", "Total Rewards");
 
         List<List<String>> cells = new ArrayList<>();
         Random random = new Random();
+        
+        // Generate data for weeks in August 1-22, 2025
+        String[] weekPeriods = {
+            "Aug 1-7, 2025", 
+            "Aug 8-14, 2025", 
+            "Aug 15-21, 2025", 
+            "Aug 22, 2025 (partial)"
+        };
+        
         for (int i = 0; i < 4; i++) {
-            int smallBottles = random.nextInt(50) + 10;
-            int largeBottles = random.nextInt(30) + 5;
+            // Realistic weekly bottle collection data for Philippine market
+            // Small bottles: 500ml, 350ml bottles (Coke, Royal, Sprite, etc.)
+            int smallBottles;
+            int largeBottles;
+            
+            if (i == 3) { // Last partial week (Aug 22 only - 1 day)
+                smallBottles = random.nextInt(30) + 15;  // 15-45 small bottles for 1 day
+                largeBottles = random.nextInt(15) + 10;   // 10-25 large bottles for 1 day
+            } else { // Full weeks
+                smallBottles = random.nextInt(180) + 120;  // 120-300 small bottles per week
+                largeBottles = random.nextInt(100) + 80;   // 80-180 large bottles per week
+            }
+            
             int totalBottles = smallBottles + largeBottles;
-            int overallWeight = totalBottles * (random.nextInt(10) + 5);
-            double totalReward = totalBottles * (random.nextDouble() * 0.1);
+            
+            // Calculate realistic weight
+            // Small bottles average: 18g, Large bottles average: 35g
+            int overallWeight = (smallBottles * (random.nextInt(8) + 15)) + // 15-22g for small
+                              (largeBottles * (random.nextInt(16) + 28));   // 28-43g for large
+            
+            // Reward calculation: Small ₱1, Large ₱2
+            int totalReward = (smallBottles * 1) + (largeBottles * 2); // Simple whole number calculation
+            
             List<String> cellRow = Arrays.asList(
-                    "Week " + (i + 1),
+                    weekPeriods[i],
                     String.valueOf(smallBottles),
                     String.valueOf(largeBottles),
                     String.valueOf(overallWeight) + "g",
                     String.valueOf(totalBottles),
-                    "$" + String.format("%.2f", totalReward)
+                    "₱" + String.valueOf(totalReward)
             );
             cells.add(cellRow);
         }

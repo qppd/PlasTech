@@ -9,6 +9,7 @@ import com.qppd.plastech.Classes.User;
 import com.qppd.plastech.Globals.UserGlobal;
 import com.qppd.plastech.Libs.DateTimez.DateTimeClass;
 import com.qppd.plastech.Libs.Firebasez.FirebaseRTDBHelper;
+import com.qppd.plastech.data.SharedRepository;
 import com.qppd.plastech.ui.home.model.Earning;
 import com.qppd.plastech.ui.home.model.NotificationItem;
 import com.qppd.plastech.ui.home.model.TipItem;
@@ -29,6 +30,7 @@ public class HomeViewModel extends ViewModel {
     private FirebaseRTDBHelper<User> userHelper = new FirebaseRTDBHelper<>("plastech");
     private FirebaseRTDBHelper<ActivityLog> activityHelper = new FirebaseRTDBHelper<>("plastech");
     private DateTimeClass dateTime = new DateTimeClass("MM/dd/yyyy HH:mm:ss");
+    private final SharedRepository sharedRepository = SharedRepository.getInstance();
 
     // Getters for LiveData
     public LiveData<User> getUserLiveData() {
@@ -57,6 +59,28 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<String> getErrorMessageLiveData() {
         return errorMessageLiveData;
+    }
+
+    public HomeViewModel() {
+        // Observe shared repository data
+        sharedRepository.getUserLiveData().observeForever(userLiveData::setValue);
+        sharedRepository.getEarningsLiveData().observeForever(earningsLiveData::setValue);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        // Remove observers to prevent memory leaks
+        sharedRepository.getUserLiveData().removeObserver(userLiveData::setValue);
+        sharedRepository.getEarningsLiveData().removeObserver(earningsLiveData::setValue);
+    }
+
+    public void updateSharedUser(User user) {
+        sharedRepository.setUser(user);
+    }
+
+    public void updateSharedEarnings(Earning earnings) {
+        sharedRepository.setEarnings(earnings);
     }
 
     public void loadHomeData() {

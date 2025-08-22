@@ -95,19 +95,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private TextView txtRegistrationDate;
     private TextView txtStatus;
 
-    private RecyclerView recyclerViewActivities;
-    private TextView txtViewAllActivities;
-    private TextView txtNoActivities;
-    private ProgressBar progressBarActivities;
-
     private CardView cardPickUpTrash;
     private CardView cardHelpCenter;
     private CardView cardMonitoring;
     private CardView cardRecords;
 
     private Button btnLogout;
-
-    private ActivityLogAdapter activityLogAdapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -121,7 +114,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         initializeComponents();
         setupObservers();
-        setupRecyclerView();
         loadProfilePhoto();
         
         // Load data
@@ -142,21 +134,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         imbEditName.setOnClickListener(this);
 
         txtEmail = root.findViewById(R.id.txtEmail);
-        imbEditEmail = root.findViewById(R.id.imbEditEmail);
-        imbEditEmail.setOnClickListener(this);
-
         txtPhone = root.findViewById(R.id.txtPhone);
         imbEditPhone = root.findViewById(R.id.imbEditPhone);
         imbEditPhone.setOnClickListener(this);
 
-        txtRegistrationDate = root.findViewById(R.id.txtRegistrationDate);
-        txtStatus = root.findViewById(R.id.txtStatus);
-
-        recyclerViewActivities = root.findViewById(R.id.recyclerViewActivities);
-        txtViewAllActivities = root.findViewById(R.id.txtViewAllActivities);
-        txtViewAllActivities.setOnClickListener(this);
-        txtNoActivities = root.findViewById(R.id.txtNoActivities);
-        progressBarActivities = root.findViewById(R.id.progressBarActivities);
+        txtStatus = root.findViewById(R.id.txtStatus); // Initialize txtStatus
 
         cardPickUpTrash = root.findViewById(R.id.cardPickUpTrash);
         cardPickUpTrash.setOnClickListener(this);
@@ -213,15 +195,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
 
         profileViewModel.getActivityLogsLiveData().observe(getViewLifecycleOwner(), activityLogs -> {
-            if (activityLogs != null) {
-                updateActivityLogsUI(activityLogs);
-            }
-        });
-
-        profileViewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading != null) {
-                progressBarActivities.setVisibility(isLoading ? View.VISIBLE : View.GONE);
-            }
+            // Activity logs loaded but not displayed in RecyclerView anymore
         });
 
         profileViewModel.getErrorMessageLiveData().observe(getViewLifecycleOwner(), errorMessage -> {
@@ -231,53 +205,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
     }
 
-    private void setupRecyclerView() {
-        activityLogAdapter = new ActivityLogAdapter();
-        recyclerViewActivities.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewActivities.setAdapter(activityLogAdapter);
-    }
-
     private void updateUserUI(User user) {
         txtName.setText(user.getName());
         txtEmail.setText(user.getEmail());
         txtPhone.setText(user.getContact());
-        
-        // Format registration date
-        SimpleDateFormat inputFormat = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.getDefault());
-        SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-        try {
-            Date date = inputFormat.parse(user.getCreated_at());
-            txtRegistrationDate.setText("Member since: " + outputFormat.format(date));
-        } catch (Exception e) {
-            txtRegistrationDate.setText("Member since: " + user.getCreated_at());
-        }
 
         // Set status
         String statusText = user.getStatus() == 1 ? "Active" : "Inactive";
         txtStatus.setText(statusText);
         
-        // Animate the profile card
+        // Load profile picture using Glide
+        Glide.with(this)
+                .load(R.drawable.profile) // This would be the user's actual profile photo URL
+                .placeholder(R.drawable.profile)
+                .error(R.drawable.profile)
+                .into(civProfilePhoto);
+        
+        // Animate the UI elements similar to HomeFragment
         civProfilePhoto.startAnimation(
             AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
-    }
-
-    private void updateActivityLogsUI(List<ActivityLog> activityLogs) {
-        if (activityLogs.isEmpty()) {
-            txtNoActivities.setVisibility(View.VISIBLE);
-            recyclerViewActivities.setVisibility(View.GONE);
-        } else {
-            txtNoActivities.setVisibility(View.GONE);
-            recyclerViewActivities.setVisibility(View.VISIBLE);
-            
-            // Show only recent 3 activities
-            List<ActivityLog> recentActivities = activityLogs.size() > 3 ? 
-                activityLogs.subList(0, 3) : activityLogs;
-            activityLogAdapter.setActivityLogs(recentActivities);
-            
-            // Animate the recycler view
-            recyclerViewActivities.startAnimation(
-                AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
-        }
+        txtName.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
     }
 
     private void loadProfilePhoto(){
@@ -348,28 +296,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.imbEditName:
                 showEditNameDialog();
                 break;
-            case R.id.imbEditEmail:
-                showEditEmailDialog();
-                break;
+
             case R.id.imbEditPhone:
                 showEditPhoneDialog();
                 break;
-            case R.id.txtViewAllActivities:
-                // Navigate to full activity logs screen
-                // You can implement this navigation later
-                function.showMessage("View all activities feature coming soon!");
-                break;
             case R.id.cardPickUpTrash:
+                // Add animation before navigation like HomeFragment
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.card_press_down));
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
             case R.id.cardHelpCenter:
+                // Add animation before navigation
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.card_press_down));
                 Intent intent = new Intent(context, HelpActivity.class);
                 startActivity(intent);
                 break;
             case R.id.cardMonitoring:
+                // Add animation before navigation
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.card_press_down));
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);
                 break;
             case R.id.cardRecords:
+                // Add animation before navigation
+                v.startAnimation(AnimationUtils.loadAnimation(context, R.anim.card_press_down));
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
                 break;
             case R.id.btnLogout:

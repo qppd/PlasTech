@@ -15,8 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
@@ -29,9 +27,7 @@ import com.qppd.plastech.Globals.UserGlobal;
 import com.qppd.plastech.Libs.Functionz.FunctionClass;
 import com.qppd.plastech.R;
 import com.qppd.plastech.databinding.FragmentHomeBinding;
-import com.qppd.plastech.ui.home.adapter.HomeActivityAdapter;
 import com.qppd.plastech.ui.home.model.Earning;
-import com.qppd.plastech.ui.home.model.NotificationItem;
 import com.qppd.plastech.ui.home.model.TipItem;
 
 import java.text.SimpleDateFormat;
@@ -65,30 +61,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TextView txtProgressLabel;
     private TextView txtProgressPercentage;
     private ProgressBar progressBarEarnings;
-    
-    // Activities section
-    private RecyclerView recyclerViewActivities;
-    private TextView txtViewAllActivities;
-    private TextView txtNoActivities;
-    private ProgressBar progressBarActivities;
-    private HomeActivityAdapter activityAdapter;
-    
-    // Notifications section
-    private MaterialCardView cardNotifications;
-    private LinearLayout layoutLatestNotification;
-    private TextView txtNotificationTitle;
-    private TextView txtNotificationMessage;
-    private TextView txtNoNotifications;
-    
-    // Tip section
-    private TextView txtTipContent;
-    
-    // Quick Actions
-    private MaterialCardView cardQuickRecycle;
-    private MaterialCardView cardQuickMonitor;
-    private MaterialCardView cardQuickProfile;
-    private MaterialCardView cardQuickRecords;
-    private FloatingActionButton fabQuickRecycle;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -102,7 +74,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         
         initializeComponents();
         setupObservers();
-        setupRecyclerView();
         setCurrentDateAndGreeting();
         
         // Load data
@@ -133,38 +104,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         txtProgressLabel = root.findViewById(R.id.txtProgressLabel);
         txtProgressPercentage = root.findViewById(R.id.txtProgressPercentage);
         progressBarEarnings = root.findViewById(R.id.progressBarEarnings);
-        
-        // Activities components
-        recyclerViewActivities = root.findViewById(R.id.recyclerViewActivities);
-        txtViewAllActivities = root.findViewById(R.id.txtViewAllActivities);
-        txtViewAllActivities.setOnClickListener(this);
-        txtNoActivities = root.findViewById(R.id.txtNoActivities);
-        progressBarActivities = root.findViewById(R.id.progressBarActivities);
-        
-        // Notifications components
-        cardNotifications = root.findViewById(R.id.cardNotifications);
-        cardNotifications.setOnClickListener(this);
-        layoutLatestNotification = root.findViewById(R.id.layoutLatestNotification);
-        txtNotificationTitle = root.findViewById(R.id.txtNotificationTitle);
-        txtNotificationMessage = root.findViewById(R.id.txtNotificationMessage);
-        txtNoNotifications = root.findViewById(R.id.txtNoNotifications);
-        
-        // Tip section
-        txtTipContent = root.findViewById(R.id.txtTipContent);
-        
-        // Quick Actions
-        cardQuickRecycle = root.findViewById(R.id.cardQuickRecycle);
-        cardQuickRecycle.setOnClickListener(this);
-        cardQuickMonitor = root.findViewById(R.id.cardQuickMonitor);
-        cardQuickMonitor.setOnClickListener(this);
-        cardQuickProfile = root.findViewById(R.id.cardQuickProfile);
-        cardQuickProfile.setOnClickListener(this);
-        cardQuickRecords = root.findViewById(R.id.cardQuickRecords);
-        cardQuickRecords.setOnClickListener(this);
-        
-        // Floating Action Button
-        fabQuickRecycle = root.findViewById(R.id.fabQuickRecycle);
-        fabQuickRecycle.setOnClickListener(this);
+
+
     }
 
     private void setupObservers() {
@@ -174,34 +115,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        homeViewModel.getRecentActivitiesLiveData().observe(getViewLifecycleOwner(), activities -> {
-            if (activities != null) {
-                updateActivitiesUI(activities);
-            }
-        });
-
         homeViewModel.getEarningsLiveData().observe(getViewLifecycleOwner(), earning -> {
             if (earning != null) {
                 updateEarningsUI(earning);
             }
         });
-
-        homeViewModel.getNotificationsLiveData().observe(getViewLifecycleOwner(), notifications -> {
-            if (notifications != null && !notifications.isEmpty()) {
-                updateNotificationsUI(notifications);
-            }
-        });
-
-        homeViewModel.getTipOfDayLiveData().observe(getViewLifecycleOwner(), tip -> {
-            if (tip != null) {
-                updateTipUI(tip);
-            }
-        });
-
+        
         homeViewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null) {
                 swipeRefreshLayout.setRefreshing(isLoading);
-                progressBarActivities.setVisibility(isLoading ? View.VISIBLE : View.GONE);
             }
         });
 
@@ -210,13 +132,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 function.showMessage(errorMessage);
             }
         });
-    }
-
-    private void setupRecyclerView() {
-        activityAdapter = new HomeActivityAdapter();
-        recyclerViewActivities.setLayoutManager(new LinearLayoutManager(context));
-        recyclerViewActivities.setAdapter(activityAdapter);
-        recyclerViewActivities.setNestedScrollingEnabled(false);
     }
 
     private void setCurrentDateAndGreeting() {
@@ -245,21 +160,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
     }
 
-    private void updateActivitiesUI(List<ActivityLog> activities) {
-        if (activities.isEmpty()) {
-            txtNoActivities.setVisibility(View.VISIBLE);
-            recyclerViewActivities.setVisibility(View.GONE);
-        } else {
-            txtNoActivities.setVisibility(View.GONE);
-            recyclerViewActivities.setVisibility(View.VISIBLE);
-            activityAdapter.setActivities(activities);
-            
-            // Add animation
-            recyclerViewActivities.startAnimation(
-                AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
-        }
-    }
-
     private void updateEarningsUI(Earning earning) {
         txtTotalEarnings.setText(earning.getFormattedTotalEarnings());
         txtTodayEarnings.setText(earning.getFormattedTodayEarnings());
@@ -278,34 +178,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
     }
 
-    private void updateNotificationsUI(List<NotificationItem> notifications) {
-        if (!notifications.isEmpty()) {
-            NotificationItem latestNotification = notifications.get(0);
-            
-            txtNotificationTitle.setText(latestNotification.getTitle());
-            txtNotificationMessage.setText(latestNotification.getMessage());
-            
-            layoutLatestNotification.setVisibility(View.VISIBLE);
-            txtNoNotifications.setVisibility(View.GONE);
-            
-            // Add unread indicator if notification is not read
-            if (!latestNotification.isRead()) {
-                // Add a visual indicator for unread notifications
-                txtNotificationTitle.setTextColor(context.getColor(R.color.colorPrimary));
-            }
-        } else {
-            layoutLatestNotification.setVisibility(View.GONE);
-            txtNoNotifications.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void updateTipUI(TipItem tip) {
-        txtTipContent.setText(tip.getContent());
-        
-        // Add animation
-        txtTipContent.startAnimation(
-            AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
-    }
 
     private String getTimeBasedGreeting() {
         Calendar calendar = Calendar.getInstance();
@@ -329,43 +201,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     AnimationUtils.loadAnimation(context, R.anim.profile_photo_animation));
                 NavHostFragment.findNavController(this).navigate(R.id.navigation_profile);
                 break;
-                
-            case R.id.txtViewAllActivities:
-                // Navigate to full activity logs
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_profile);
-                break;
-                
-            case R.id.cardNotifications:
-                // Handle notification card click
-                function.showMessage("Notifications feature coming soon!");
-                break;
-                
-            case R.id.cardQuickRecycle:
-                // Navigate to monitor/recycling section
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);
-                break;
-                
-            case R.id.cardQuickMonitor:
-                // Navigate to monitoring
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);
-                break;
-                
-            case R.id.cardQuickProfile:
-                // Navigate to profile
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_profile);
-                break;
-                
-            case R.id.cardQuickRecords:
-                // Navigate to records/updates
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_update);
-                break;
-                
-            case R.id.fabQuickRecycle:
-                // Navigate to monitor/recycling section with animation
-                fabQuickRecycle.startAnimation(
-                    AnimationUtils.loadAnimation(context, R.anim.profile_photo_animation));
-                NavHostFragment.findNavController(this).navigate(R.id.navigation_monitor);
-                break;
+
         }
     }
 

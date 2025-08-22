@@ -92,12 +92,16 @@ public class MonitorFragment extends Fragment {
         // Initialize dummy data generator
         dummyDataGenerator = new DummyDataGenerator();
         
-        // Load today's data initially
-        currentSelectedDate = "2024-08-22"; // Use a fixed date for demo
+        // Load August 22, 2025 data initially (aligned with updates fragment date range)
+        currentSelectedDate = "2025-08-22";
         loadDataForDate(currentSelectedDate);
         
         // Generate dummy data if needed (only once)
         generateDummyDataIfNeeded();
+
+        // Add initial animations to match HomeFragment style
+        horizontalCalendar.startAnimation(
+            AnimationUtils.loadAnimation(context, R.anim.slide_up_fade_in));
 
         return root;
     }
@@ -138,14 +142,15 @@ public class MonitorFragment extends Fragment {
     }
     
     private void showDatePickerDialog() {
-        // Create a simple date selection mechanism
-        // For now, we'll just cycle through some sample dates
+        // Sample dates from August 1-22, 2025 (aligned with updates fragment)
         String[] sampleDates = {
-            "2024-08-20", "2024-08-21", "2024-08-22", 
-            "2024-08-19", "2024-08-18", "2024-08-17"
+            "2025-08-01", "2025-08-02", "2025-08-03", "2025-08-04", "2025-08-05", "2025-08-06",
+            "2025-08-07", "2025-08-08", "2025-08-09", "2025-08-10", "2025-08-11", "2025-08-12",
+            "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-16", "2025-08-17", "2025-08-18",
+            "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22"
         };
         
-        // Simple rotation through dates for demo
+        // Cycle through the August 2025 dates
         int currentIndex = java.util.Arrays.asList(sampleDates).indexOf(currentSelectedDate);
         int nextIndex = (currentIndex + 1) % sampleDates.length;
         String selectedDate = sampleDates[nextIndex];
@@ -256,9 +261,9 @@ public class MonitorFragment extends Fragment {
                 
                 @Override
                 public void onFailure(Exception e) {
-                    // If no historical data, check if it's today and load current bin data
-                    String today = dateFormat.format(new Date());
-                    if (date.equals(today)) {
+                    // If no historical data, check if it's within August 2025 range and load current bin data
+                    String currentDate = "2025-08-22"; // Current demo date
+                    if (date.equals(currentDate)) {
                         loadCurrentBinData();
                     } else {
                         isDataLoading = false;
