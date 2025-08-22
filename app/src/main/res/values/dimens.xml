@@ -7,4 +7,7 @@
     <dimen name="table_view_cell_height">48dp</dimen>
     <dimen name="table_view_default_text_size">14sp</dimen>
     <dimen name="table_view_row_header_width">28dp</dimen>
+    
+    <!-- Bottom navigation spacing -->
+    <dimen name="bottom_nav_margin">80dp</dimen>
 </resources>

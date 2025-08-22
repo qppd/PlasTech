@@ -27,7 +27,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="16dp"
+                android:paddingBottom="@dimen/bottom_nav_margin">
 
                 <!-- Welcome Header -->
                 <com.google.android.material.card.MaterialCardView
@@ -320,17 +321,6 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Floating Action Button for Quick Recycle -->
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabQuickRecycle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_baseline_recycling"
-        android:contentDescription="@string/quick_action_recycle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:tint="@color/white"
-        app:backgroundTint="@color/green" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
