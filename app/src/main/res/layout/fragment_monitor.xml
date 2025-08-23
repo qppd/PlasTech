@@ -201,7 +201,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="54sp" />
+                                    android:textSize="46sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -247,7 +247,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="54sp" />
+                                    android:textSize="46sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -318,7 +318,7 @@
                             android:gravity="center"
                             android:text="00"
                             android:textColor="@color/white"
-                            android:textSize="54sp" />
+                            android:textSize="46sp" />
 
                         <View
                             android:layout_width="match_parent"
@@ -366,7 +366,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="54sp" />
+                                    android:textSize="46sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -460,7 +460,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="54sp" />
+                                    android:textSize="46sp" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -506,7 +506,7 @@
                                     android:gravity="center"
                                     android:text="00"
                                     android:textColor="@color/white"
-                                    android:textSize="54sp" />
+                                    android:textSize="46sp" />
 
                                 <View
                                     android:layout_width="match_parent"
