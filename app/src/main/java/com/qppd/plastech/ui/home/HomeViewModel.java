@@ -148,30 +148,31 @@ public class HomeViewModel extends ViewModel {
         List<ActivityLog> dummyActivities = new ArrayList<>();
         String userId = UserGlobal.getUser_id();
         
+        // Recent activities based on real transaction data from 8/23/2025
         dummyActivities.add(new ActivityLog(
             "dummy_1",
             userId,
             "Plastic Recycling",
-            "Recycled 3 PET bottles — ₱6.00 credited",
-            dateTime.getFormattedTime(),
+            "Recycled Large bottle (8.7\" x 9\") — ₱1.00 credited",
+            "8/23/2025 12:33:00",
             "Completed"
         ));
         
         dummyActivities.add(new ActivityLog(
             "dummy_2",
             userId,
-            "Clean-up Event",
-            "Joined Beach Clean-up Drive",
-            dateTime.getFormattedTime(),
+            "Plastic Recycling", 
+            "Recycled Large bottle (9.9\" x 8\") — ₱1.00 credited",
+            "8/23/2025 12:18:00",
             "Completed"
         ));
         
         dummyActivities.add(new ActivityLog(
             "dummy_3",
             userId,
-            "Bottle Collection",
-            "Recycled 2 1.5L bottles — ₱4.00 credited",
-            dateTime.getFormattedTime(),
+            "Plastic Recycling",
+            "Recycled Large bottle (9.5\" x 9\") — ₱1.00 credited",
+            "8/23/2025 12:07:00",
             "Completed"
         ));
         
@@ -180,13 +181,18 @@ public class HomeViewModel extends ViewModel {
 
     private void loadDummyEarnings() {
         Earning earning = new Earning();
-        earning.setTotalEarnings(120.00);
-        earning.setTodayEarnings(10.00);
-        earning.setThisWeekEarnings(45.00);
-        earning.setThisMonthEarnings(120.00);
-        earning.setUserLevel("Eco Warrior");
-        earning.setProgressToNextLevel(75); // 75% to next milestone
-        earning.setNextMilestone(500.00);
+        
+        // Based on real transaction data:
+        // 8/22/2025: 16 transactions × ₱1.00 = ₱16.00
+        // 8/23/2025: 13 transactions × ₱1.00 = ₱13.00  
+        // Total: ₱29.00
+        earning.setTotalEarnings(29.00);
+        earning.setTodayEarnings(13.00); // August 23 earnings
+        earning.setThisWeekEarnings(29.00); // Both days are in same week
+        earning.setThisMonthEarnings(29.00); // Both days are in August
+        earning.setUserLevel("Eco Beginner");
+        earning.setProgressToNextLevel(29); // 29% to next milestone (₱100)
+        earning.setNextMilestone(100.00);
         
         earningsLiveData.setValue(earning);
     }
@@ -197,24 +203,24 @@ public class HomeViewModel extends ViewModel {
         notifications.add(new NotificationItem(
             "earning_notification",
             "Earnings Update",
-            "₱10.00 credited for today's recycling!",
-            dateTime.getFormattedTime(),
+            "₱13.00 credited for today's recycling!",
+            "8/23/2025 12:33:00",
             false
         ));
         
         notifications.add(new NotificationItem(
-            "milestone_notification",
-            "Milestone Reached",
-            "Congratulations! You've reached ₱100 total earnings!",
-            dateTime.getFormattedTime(),
+            "daily_summary",
+            "Daily Summary",
+            "Great job! You recycled 13 bottles today earning ₱13.00",
+            "8/23/2025 12:35:00",
             false
         ));
         
         notifications.add(new NotificationItem(
-            "event_notification",
-            "Upcoming Event",
-            "Beach Clean-up Drive this Saturday. Join us!",
-            dateTime.getFormattedTime(),
+            "milestone_progress",
+            "Milestone Progress",
+            "You're 29% towards your next milestone of ₱100!",
+            "8/23/2025 12:30:00",
             true
         ));
         

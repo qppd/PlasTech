@@ -35,8 +35,8 @@ public class DummyDataGenerator {
         List<BinHistoricalData> dataList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         
-        // Generate data for August 1-22, 2025 to align with updates fragment
-        int[] augustDays = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22};
+        // Generate data for August 22-23, 2025 based on real transaction data
+        int[] augustDays = {22, 23};
         
         for (int day : augustDays) {
             calendar.set(2025, Calendar.AUGUST, day);
@@ -44,7 +44,7 @@ public class DummyDataGenerator {
             String date = dateFormat.format(calendar.getTime());
             long timestamp = calendar.getTimeInMillis();
             
-            // Generate realistic data that aligns with updates fragment
+            // Generate data based on actual transaction records
             BinHistoricalData data = generateDataForDate(date, timestamp, day);
             dataList.add(data);
         }
@@ -53,62 +53,52 @@ public class DummyDataGenerator {
     }
     
     private BinHistoricalData generateDataForDate(String date, long timestamp, int dayOfMonth) {
-        // Create realistic patterns based on the daily update fragment data
-        // Each day has 1 entry in daily table, so simulate realistic accumulation
+        // Create data based on actual transaction records from user-provided data
         
-        // Philippine bottle brands distribution (aligned with daily table)
-        // Large bottles: 1.5L and 1L bottles (reward ₱2 each)
-        // Small bottles: 500ml and 350ml bottles (reward ₱1 each)
+        int bottleLarge, bottleSmall, totalWeight, totalRewards;
         
-        // Generate bottle counts that reflect realistic daily collection
-        // Based on the daily table showing 1 entry per day, simulate realistic daily accumulation
-        
-        Random dailyRandom = new Random(date.hashCode()); // Consistent data for same date
-        
-        // Simulate daily collections - each day receives multiple bottles
-        int bottleLarge = dailyRandom.nextInt(8) + 3; // 3-10 large bottles per day
-        int bottleSmall = dailyRandom.nextInt(12) + 5; // 5-16 small bottles per day
-        
-        // Add weekend/weekday variation
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(timestamp);
-        int dayOfWeek = cal.get(Calendar.DAY_OF_WEEK);
-        boolean isWeekend = (dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY);
-        
-        if (isWeekend) {
-            // More activity on weekends (people at home, more consumption)
-            bottleLarge += dailyRandom.nextInt(5);
-            bottleSmall += dailyRandom.nextInt(8);
+        if (dayOfMonth == 22) {
+            // August 22, 2025 data - 16 transactions
+            // Large bottles: 6 (9.5"x9", 9.5"x9", 10"x9", 9.4"x8", 9"x8.5", 9.5"x9", 9.8"x8.7")
+            // Small bottles: 10 (5"x5", 6.6"x6", 5.5"x5", 5.6"x5", 5.5"x5", 5"x5", 5"x5", 6.7"x5", 6.4"x5")
+            bottleLarge = 7; // 7 large bottles
+            bottleSmall = 9; // 9 small bottles
+            // Total weight: Large: 45+46+45+44+47+45+48 = 320g, Small: 15+17+15+18+16+16+15+17+18 = 147g
+            totalWeight = 467; // 320 + 147 = 467g
+            totalRewards = 16; // ₱1.00 each = ₱16.00
+        } else if (dayOfMonth == 23) {
+            // August 23, 2025 data - 13 transactions  
+            // Large bottles: 8 (9.5"x8", 9.5"x9", 10"x8", 8.4"x8", 9.5"x9", 9.9x8", 8.7x9")
+            // Small bottles: 5 (5"x5", 6.5'x5", 5.5"x5, 5.5"x5", 5.7"x5", 7.2"x6")
+            bottleLarge = 7; // 7 large bottles  
+            bottleSmall = 6; // 6 small bottles
+            // Total weight: Large: 40+43+39+36+44+45+43 = 290g, Small: 15+21+10+20+25+19 = 110g
+            totalWeight = 400; // 290 + 110 = 400g
+            totalRewards = 13; // ₱1.00 each = ₱13.00
+        } else {
+            // Fallback for other dates (shouldn't be used with current data)
+            bottleLarge = 5;
+            bottleSmall = 8;
+            totalWeight = 300;
+            totalRewards = 13;
         }
         
-        // Calculate derived values based on realistic metrics
         int totalBottles = bottleLarge + bottleSmall;
         
-        // Bin level calculation (realistic capacity management)
-        int binLevel = Math.min(100, (totalBottles * 2) + dailyRandom.nextInt(20));
+        // Calculate bin level based on bottle count (realistic capacity management)
+        // Assume bin can hold ~50 bottles before being considered full
+        int binLevel = Math.min(100, (totalBottles * 100) / 50);
         
-        // Total rewards: ₱2 for large, ₱1 for small (aligned with updates fragment)
-        int totalRewards = (bottleLarge * 2) + (bottleSmall * 1);
-        
-        // Total weight based on realistic bottle weights from updates fragment
-        // Large bottles: 25-50g average ~37g, Small bottles: 12-25g average ~18g
-        int largeBotleWeight = bottleLarge * (35 + dailyRandom.nextInt(10)); // 35-44g per large bottle
-        int smallBottleWeight = bottleSmall * (15 + dailyRandom.nextInt(8)); // 15-22g per small bottle
-        int totalWeight = largeBotleWeight + smallBottleWeight;
-        
-        // Coin stock simulation (starts high, decreases as rewards are given)
+        // Coin stock simulation - starts high and decreases as rewards are given
         int baseStock = 500;
-        int dailyDeduction = (dayOfMonth - 1) * 15; // Gradual decrease over month
-        int coinStock = Math.max(50, baseStock - dailyDeduction - (totalRewards / 2) + dailyRandom.nextInt(30));
+        int coinStock = Math.max(50, baseStock - (totalRewards * 5)); // Decrease based on rewards given
         
-        // Determine status
+        // Status based on bin level and activity
         String status = "normal";
-        if (binLevel >= 95) {
-            status = "full";
-        } else if (totalBottles <= 2) {
+        if (binLevel >= 85) {
+            status = "high";
+        } else if (totalBottles <= 5) {
             status = "low";
-        } else if (dailyRandom.nextInt(30) == 0) { // ~3% chance of maintenance
-            status = "maintenance";
         }
         
         return new BinHistoricalData(date, timestamp, bottleLarge, bottleSmall, 
@@ -139,13 +129,13 @@ public class DummyDataGenerator {
     }
     
     public void generateTodaysData(DataGenerationCallback callback) {
-        // Generate data for August 22, 2025 (current demo date)
-        String currentDate = "2025-08-22";
+        // Generate data for August 23, 2025 (latest data from provided transactions)
+        String currentDate = "2025-08-23";
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2025, Calendar.AUGUST, 22);
+        calendar.set(2025, Calendar.AUGUST, 23);
         long timestamp = calendar.getTimeInMillis();
         
-        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 22);
+        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 23);
         String key = "bin_history/" + currentDate;
         
         historicalDataHelper.save(key, todayData, new FirebaseRTDBHelper.DatabaseCallback() {
