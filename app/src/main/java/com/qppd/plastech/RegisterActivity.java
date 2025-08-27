@@ -55,15 +55,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private void initializeComponents() {
 
         edtEmail = findViewById(R.id.edtEmail);
-        edtEmail.setText("sajedhm1@gmail.com");
         edtName = findViewById(R.id.edtName);
-        edtName.setText("Sajed Lopez Mendoza");
         edtPhone = findViewById(R.id.edtPhone);
-        edtPhone.setText("09634905586");
         edtPassword = findViewById(R.id.edtPassword);
-        edtPassword.setText("Jedtala01+");
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
-        edtConfirmPassword.setText("Jedtala01+");
 
         btnRegister = findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(this);
