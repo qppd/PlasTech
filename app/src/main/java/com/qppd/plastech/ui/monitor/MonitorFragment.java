@@ -28,7 +28,7 @@ import com.qppd.plastech.Classes.Bin;
 import com.qppd.plastech.Classes.BinHistoricalData;
 import com.qppd.plastech.Libs.Firebasez.FirebaseRTDBHelper;
 import com.qppd.plastech.R;
-import com.qppd.plastech.Utils.DummyDataGenerator;
+import com.qppd.plastech.utils.DummyDataGenerator;
 import com.qppd.plastech.databinding.FragmentMonitorBinding;
 import com.sahana.horizontalcalendar.HorizontalCalendar;
 

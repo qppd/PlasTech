@@ -15,12 +15,14 @@ import java.util.Arrays;
 import java.util.List;
 import com.qppd.plastech.data.SharedRepository;
 
-
-
 public class WeeklyTableFragment extends Fragment {
     private TableView tableView;
     private final SharedRepository sharedRepository = SharedRepository.getInstance();
 
+    String[][] weeklyData = {
+            {"Aug 20, 2025", "32", "28", "2713.7g", "60"},
+            {"Aug 21, 2025", "14", "25", "1651.06g", "39"}
+    };
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

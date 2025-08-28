@@ -13,7 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.qppd.plastech.R;
-import com.qppd.plastech.Utils.DummyDataGenerator;
+import com.qppd.plastech.utils.DummyDataGenerator;
 
 public class DataManagementFragment extends Fragment {
     
