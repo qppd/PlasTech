@@ -72,7 +72,7 @@ public class DataManagementFragment extends Fragment {
         showLoading(true);
         btnGenerateTodayData.setEnabled(false);
         
-        dummyDataGenerator.generateTodaysData(new DummyDataGenerator.DataGenerationCallback() {
+        dummyDataGenerator.generateAndUploadDummyData(new DummyDataGenerator.DataGenerationCallback() {
             @Override
             public void onSuccess() {
                 showLoading(false);

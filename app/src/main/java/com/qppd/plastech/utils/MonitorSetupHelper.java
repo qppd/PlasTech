@@ -52,7 +52,7 @@ public class MonitorSetupHelper {
      * Quick refresh of today's data
      */
     public void refreshTodaysData(SetupCallback callback) {
-        dummyDataGenerator.generateTodaysData(new DummyDataGenerator.DataGenerationCallback() {
+        dummyDataGenerator.generateAndUploadDummyData(new DummyDataGenerator.DataGenerationCallback() {
             @Override
             public void onSuccess() {
                 Toast.makeText(context, "Today's data refreshed successfully!", Toast.LENGTH_SHORT).show();

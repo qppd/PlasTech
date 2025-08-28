@@ -136,35 +136,58 @@ public class MonitorFragment extends Fragment {
         // For now, we'll implement manual date selection through touch events
         // The HorizontalCalendar library in version 1.2.2 may not have the listener interface
         horizontalCalendar.setOnClickListener(v -> {
-            // For demonstration, let's create a simple date picker
+            // Show date picker with all available dates
             showDatePickerDialog();
+        });
+        
+        // Add a long click listener to show help
+        horizontalCalendar.setOnLongClickListener(v -> {
+            String datesInfo = "Available dates (from 379 transactions):\n" +
+                             "Aug 20, 21, 22, 25, 26, 27, 2025\n" +
+                             "\nTap calendar to cycle through dates.";
+            Toast.makeText(context, datesInfo, Toast.LENGTH_LONG).show();
+            return true;
         });
     }
     
     private void showDatePickerDialog() {
-        // Sample dates from August 1-22, 2025 (aligned with updates fragment)
-        String[] sampleDates = {
-            "2025-08-01", "2025-08-02", "2025-08-03", "2025-08-04", "2025-08-05", "2025-08-06",
-            "2025-08-07", "2025-08-08", "2025-08-09", "2025-08-10", "2025-08-11", "2025-08-12",
-            "2025-08-13", "2025-08-14", "2025-08-15", "2025-08-16", "2025-08-17", "2025-08-18",
-            "2025-08-19", "2025-08-20", "2025-08-21", "2025-08-22"
-        };
-        
-        // Cycle through the August 2025 dates
-        int currentIndex = java.util.Arrays.asList(sampleDates).indexOf(currentSelectedDate);
-        int nextIndex = (currentIndex + 1) % sampleDates.length;
-        String selectedDate = sampleDates[nextIndex];
-        
-        if (!selectedDate.equals(currentSelectedDate)) {
-            currentSelectedDate = selectedDate;
+        try {
+            // Get available dates (based on 379 DailyTableFragment rows)
+            String[] sampleDates = dummyDataGenerator.getAvailableDates();
             
-            // Add calendar selection feedback
-            addCalendarSelectionFeedback();
+            // Validate dates array is not null/empty
+            if (sampleDates == null || sampleDates.length == 0) {
+                Toast.makeText(context, "No dates available", Toast.LENGTH_SHORT).show();
+                return;
+            }
             
-            // Load data for selected date with animation
-            loadDataForDate(selectedDate);
+            // Ensure currentSelectedDate is valid
+            int currentIndex = java.util.Arrays.asList(sampleDates).indexOf(currentSelectedDate);
+            if (currentIndex == -1) {
+                currentIndex = 0; // Default to first date
+                currentSelectedDate = sampleDates[0];
+            }
             
-            Toast.makeText(context, "Viewing data for: " + selectedDate, Toast.LENGTH_SHORT).show();
+            // Cycle through the available August 2025 dates
+            int nextIndex = (currentIndex + 1) % sampleDates.length;
+            String selectedDate = sampleDates[nextIndex];
+            
+            if (!selectedDate.equals(currentSelectedDate)) {
+                currentSelectedDate = selectedDate;
+                
+                // Add calendar selection feedback
+                addCalendarSelectionFeedback();
+                
+                // Load data for selected date with animation
+                loadDataForDate(selectedDate);
+                
+                // Show more informative message
+                String dateFormatted = selectedDate.substring(8); // Get day part
+                Toast.makeText(context, "Viewing data for: Aug " + dateFormatted + ", 2025", Toast.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error in date picker", e);
+            Toast.makeText(context, "Error selecting date", Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -197,7 +220,6 @@ public class MonitorFragment extends Fragment {
     }
     
     private void addCalendarSelectionFeedback() {
-        // Simple vibration feedback could be added here
         // For now, just a subtle visual feedback
         horizontalCalendar.startAnimation(AnimationUtils.loadAnimation(context, R.anim.card_press_down));
         new Handler().postDelayed(() -> {
@@ -227,24 +249,43 @@ public class MonitorFragment extends Fragment {
     }
     
     private void generateDummyData() {
+        Toast.makeText(context, "Generating historical data...", Toast.LENGTH_SHORT).show();
+        
         dummyDataGenerator.generateAndUploadDummyData(new DummyDataGenerator.DataGenerationCallback() {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "Dummy data generated successfully");
-                // Reload current date data
-                loadDataForDate(currentSelectedDate);
+                Toast.makeText(context, "Historical data ready!", Toast.LENGTH_SHORT).show();
+                
+                // Reload current date data with a slight delay to ensure Firebase sync
+                new Handler().postDelayed(() -> {
+                    if (isAdded() && context != null) {
+                        loadDataForDate(currentSelectedDate);
+                    }
+                }, 1000);
             }
             
             @Override
             public void onFailure(Exception e) {
                 Log.e(TAG, "Failed to generate dummy data", e);
                 Toast.makeText(context, "Failed to generate sample data", Toast.LENGTH_SHORT).show();
+                isDataLoading = false;
+                hideLoadingState();
             }
         });
     }
 
     private void loadDataForDate(String date) {
         if (isDataLoading) return;
+        
+        // Validate date is in supported range (Aug 20-27, 2025)
+        if (dummyDataGenerator != null && !dummyDataGenerator.hasDataForDate(date)) {
+            String supportedDates = "Aug 20, 21, 22, 25, 26, 27, 2025";
+            Toast.makeText(context, 
+                "Date not supported. Available: " + supportedDates + 
+                "\n(Total: 379 transactions)", Toast.LENGTH_LONG).show();
+            return;
+        }
         
         isDataLoading = true;
         showLoadingState();
@@ -293,24 +334,36 @@ public class MonitorFragment extends Fragment {
     }
     
     private void updateUIWithHistoricalData(BinHistoricalData data) {
+        if (data == null) {
+            showNoDataMessage(currentSelectedDate);
+            return;
+        }
+        
         animateDataUpdate(() -> {
-            animateValueChange(txtBottleLarge, data.getBottle_large());
-            animateValueChange(txtBottleSmall, data.getBottle_small());
-            animateValueChange(txtTotalReward, data.getTotal_rewards());
-            animateValueChange(txtTotalWeight, data.getTotal_weight());
-            animateValueChange(txtCoinStock, data.getCoin_stock());
+            // Add null checks for TextViews
+            if (txtBottleLarge != null) animateValueChange(txtBottleLarge, data.getBottle_large());
+            if (txtBottleSmall != null) animateValueChange(txtBottleSmall, data.getBottle_small());
+            if (txtTotalReward != null) animateValueChange(txtTotalReward, data.getTotal_rewards());
+            if (txtTotalWeight != null) animateValueChange(txtTotalWeight, data.getTotal_weight());
+            if (txtCoinStock != null) animateValueChange(txtCoinStock, data.getCoin_stock());
             
             updateBinLevelDisplay(data.getBin_level());
         });
     }
     
     private void updateUIWithCurrentData(Bin bin) {
+        if (bin == null) {
+            showErrorMessage();
+            return;
+        }
+        
         animateDataUpdate(() -> {
-            animateValueChange(txtBottleLarge, bin.getBottle_large());
-            animateValueChange(txtBottleSmall, bin.getBottle_small());
-            animateValueChange(txtTotalReward, bin.getTotal_rewards());
-            animateValueChange(txtTotalWeight, bin.getTotal_weight());
-            animateValueChange(txtCoinStock, bin.getCoin_stock());
+            // Add null checks for TextViews
+            if (txtBottleLarge != null) animateValueChange(txtBottleLarge, bin.getBottle_large());
+            if (txtBottleSmall != null) animateValueChange(txtBottleSmall, bin.getBottle_small());
+            if (txtTotalReward != null) animateValueChange(txtTotalReward, bin.getTotal_rewards());
+            if (txtTotalWeight != null) animateValueChange(txtTotalWeight, bin.getTotal_weight());
+            if (txtCoinStock != null) animateValueChange(txtCoinStock, bin.getCoin_stock());
             
             updateBinLevelDisplay(bin.getBin_level());
         });
@@ -362,18 +415,25 @@ public class MonitorFragment extends Fragment {
     }
     
     private void animateValueChange(TextView textView, int newValue) {
+        if (textView == null || !isAdded() || context == null) {
+            return;
+        }
+        
         try {
-            int currentValue = Integer.parseInt(textView.getText().toString());
+            String currentText = textView.getText().toString();
+            int currentValue = currentText.isEmpty() ? 0 : Integer.parseInt(currentText);
             
             ValueAnimator animator = ValueAnimator.ofInt(currentValue, newValue);
             animator.setDuration(800);
             animator.addUpdateListener(animation -> {
-                int animatedValue = (int) animation.getAnimatedValue();
-                textView.setText(String.format(Locale.getDefault(), "%02d", animatedValue));
+                if (textView != null && isAdded()) {
+                    int animatedValue = (int) animation.getAnimatedValue();
+                    textView.setText(String.format(Locale.getDefault(), "%02d", animatedValue));
+                }
             });
             animator.start();
         } catch (NumberFormatException e) {
-            // If parsing fails, just set the value directly
+            // Fallback: set value directly
             textView.setText(String.format(Locale.getDefault(), "%02d", newValue));
         }
     }
@@ -462,7 +522,14 @@ public class MonitorFragment extends Fragment {
     }
     
     private void showNoDataMessage(String date) {
-        Toast.makeText(context, "No data available for " + date, Toast.LENGTH_SHORT).show();
+        String message = "No data available for " + date;
+        
+        // Provide helpful information about available dates (based on 379 DailyTableFragment rows)
+        if (date.startsWith("2025-08")) {
+            message += "\n\nData available for:\nAug 20, 21, 22, 25, 26, 27, 2025\n(Total: 379 transactions)";
+        }
+        
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         
         // Set all values to zero with animation
         animateDataUpdate(() -> {
@@ -483,11 +550,22 @@ public class MonitorFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         
+        // Cancel any pending operations
+        isDataLoading = false;
+        
         // Clear animations to prevent memory leaks
         if (imgBinFull != null) {
             imgBinFull.clearAnimation();
         }
         
+        // Clear handlers and animations
+        if (horizontalCalendar != null) {
+            horizontalCalendar.clearAnimation();
+        }
+        
+        // Nullify references to prevent memory leaks
+        dummyDataGenerator = null;
         binding = null;
+        context = null;
     }
 }
