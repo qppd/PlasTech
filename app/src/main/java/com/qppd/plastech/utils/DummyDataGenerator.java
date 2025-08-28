@@ -35,8 +35,8 @@ public class DummyDataGenerator {
         List<BinHistoricalData> dataList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         
-        // Generate data for August 20-25, 2025 based on real transaction data
-        int[] augustDays = {20, 21, 22, 25};
+        // Generate data for August 20-26, 2025 based on real transaction data
+        int[] augustDays = {20, 21, 22, 25, 26};
         
         for (int day : augustDays) {
             calendar.set(2025, Calendar.AUGUST, day);
@@ -80,11 +80,18 @@ public class DummyDataGenerator {
                 totalRewards = 65;
                 break;
             case 25:
-                // August 25, 2025 - 9 bottles (7 Small + 2 Large)
-                bottleLarge = 2;
-                bottleSmall = 7;
-                totalWeight = 334; // Rounded from 333.83g
-                totalRewards = 9;
+                // August 25, 2025 - 53 bottles (30 Small + 23 Large) - Updated with expanded data
+                bottleLarge = 23;
+                bottleSmall = 30;
+                totalWeight = 1696; // Rounded from 1695.62g
+                totalRewards = 53;
+                break;
+            case 26:
+                // August 26, 2025 - 56 bottles (23 Small + 33 Large)
+                bottleLarge = 33;
+                bottleSmall = 23;
+                totalWeight = 2603; // Rounded from 2603.14g
+                totalRewards = 56;
                 break;
             default:
                 // Default case - should not happen with current data
@@ -141,13 +148,13 @@ public class DummyDataGenerator {
     }
     
     public void generateTodaysData(DataGenerationCallback callback) {
-        // Generate data for August 25, 2025 (latest data from provided transactions)
-        String currentDate = "2025-08-25";
+        // Generate data for August 26, 2025 (latest data from provided transactions)
+        String currentDate = "2025-08-26";
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2025, Calendar.AUGUST, 25);
+        calendar.set(2025, Calendar.AUGUST, 26);
         long timestamp = calendar.getTimeInMillis();
         
-        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 25);
+        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 26);
         String key = "bin_history/" + currentDate;
         
         historicalDataHelper.save(key, todayData, new FirebaseRTDBHelper.DatabaseCallback() {

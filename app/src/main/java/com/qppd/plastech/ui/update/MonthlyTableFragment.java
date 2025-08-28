@@ -47,15 +47,17 @@ public class MonthlyTableFragment extends Fragment {
         
         List<List<String>> cells = new ArrayList<>();
 
-        // Data based on actual plastic crushing records for August 20-25, 2025
-        // Total: 83 Small + 124 Large = 207 bottles across multiple days
+        // Data based on actual plastic crushing records for August 20-27, 2025
+        // Total: 160 Small + 227 Large = 387 bottles across multiple days
         
         String[][] monthlyData = {
             {"Aug 20, 2025", "2713.7g", "60"},
             {"Aug 21, 2025", "3357.93g", "73"},
             {"Aug 22, 2025", "2956.43g", "65"},
-            {"Aug 25, 2025", "333.83g", "9"},
-            {"August 2025 Total", "9361.89g", "207"}
+            {"Aug 25, 2025", "1695.62g", "53"},
+            {"Aug 26, 2025", "3368.25g", "73"},
+            {"Aug 27, 2025", "5015.32g", "109"},
+            {"August 2025 Total", "19107.25g", "387"}
         };
         
         for (String[] monthData : monthlyData) {
