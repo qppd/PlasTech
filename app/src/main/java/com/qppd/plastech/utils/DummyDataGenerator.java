@@ -1,4 +1,4 @@
-package com.qppd.plastech.Utils;
+package com.qppd.plastech.utils;
 
 import com.qppd.plastech.Classes.BinHistoricalData;
 import com.qppd.plastech.Libs.Firebasez.FirebaseRTDBHelper;
@@ -177,4 +177,4 @@ public class DummyDataGenerator {
         });
     }
 }
-}
+
