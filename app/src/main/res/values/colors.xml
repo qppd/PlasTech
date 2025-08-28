@@ -17,6 +17,7 @@
     <color name="colorGray">#E0E0E0</color>
     <color name="colorGrayLight">#F5F5F5</color>
     <color name="colorPrimary">@color/colorMain</color>
+    <color name="colorPrimaryLight">#81c784</color>
 
     <color name="red">#E53935</color>
     <color name="orange">#F4511E</color>

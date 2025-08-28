@@ -100,20 +100,12 @@
                     android:orientation="vertical"
                     android:padding="8dp">
 
-                    <!-- Calendar -->
-                    <com.sahana.horizontalcalendar.HorizontalCalendar
-                        android:id="@+id/horizontalCalendar"
+                    <!-- Custom Calendar -->
+                    <com.qppd.plastech.ui.monitor.CustomHorizontalCalendar
+                        android:id="@+id/customHorizontalCalendar"
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
-                        app:numOfDays="31"
-                        app:setBgColor="@color/colorMainDark"
-                        app:setSelectedBgColor="@color/colorAccent"
-                        app:setTextColor="@color/black"
-                        app:setSelectedTextColor="@color/white"
-                        app:setDateTextSize="22sp"
-                        app:setWeekTextSize="13sp"
-                        app:setMonthTextSize="17sp"
-                        app:setLabel="Select Date to View Data" />
+                        android:layout_marginVertical="8dp" />
 
                     <!-- Loading Indicator -->
                     <ProgressBar

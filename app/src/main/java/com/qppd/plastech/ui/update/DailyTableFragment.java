@@ -16,6 +16,26 @@ import java.util.List;
 import com.qppd.plastech.data.SharedRepository;
 
 public class DailyTableFragment extends Fragment {
+    
+    /**
+     * DailyTableFragment - Source of truth for transaction data
+     * 
+     * This fragment contains the actual plastic bottle transaction data that serves
+     * as the source of truth for the entire application. The DummyDataGenerator
+     * has been aligned to copy data from this fragment to ensure consistency.
+     * 
+     * Data structure: 379 actual transactions across Aug 20-22, 25-27, 2025
+     * Plus estimated weekend data for Aug 23-24, 2025
+     * Total: 454 transactions representing 8 days of operation
+     * 
+     * Each transaction record contains:
+     * - Date & Time, Bottle Type (Large/Small)
+     * - Height/Width Before & After compression
+     * - Weight in grams, Total cumulative weight
+     * 
+     * This data is used by DummyDataGenerator via DataAnalyzer utility class.
+     */
+    
     private TableView tableView;
     private final SharedRepository sharedRepository = SharedRepository.getInstance();
     private PlasticTableAdapter adapter;

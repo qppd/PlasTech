@@ -63,8 +63,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     void initializeComponents() {
         email = findViewById(R.id.edtEmail);
+        email.setText("sajedhm@gmail.com");
         password = findViewById(R.id.edtPassword);
-
+        password.setText("Jedtala01+");
         btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this);
 
