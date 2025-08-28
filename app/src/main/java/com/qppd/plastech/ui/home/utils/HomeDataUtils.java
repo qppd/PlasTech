@@ -29,7 +29,7 @@ public class HomeDataUtils {
             "sample_1",
             userId,
             "Plastic Recycling",
-            "Recycled 3 PET bottles — ₱6.00 credited",
+            "Recycled 9 mixed bottles on Aug 25 — ₱9.00 credited",
             dateTime.getFormattedTime(),
             "Completed"
         ));
@@ -37,8 +37,8 @@ public class HomeDataUtils {
         activities.add(new ActivityLog(
             "sample_2", 
             userId,
-            "Beach Clean-up",
-            "Joined community beach clean-up event",
+            "High Volume Day",
+            "Processed 65 bottles on Aug 22 — ₱65.00 credited",
             dateTime.getFormattedTime(),
             "Completed"
         ));
@@ -46,8 +46,8 @@ public class HomeDataUtils {
         activities.add(new ActivityLog(
             "sample_3",
             userId,
-            "Bottle Collection",
-            "Recycled 2 1.5L bottles — ₱4.00 credited",
+            "Weekly Achievement",
+            "Recycled 207+ bottles this month — Eco Champion level reached!",
             dateTime.getFormattedTime(),
             "Completed"
         ));
@@ -60,13 +60,13 @@ public class HomeDataUtils {
      */
     public static Earning createSampleEarnings() {
         Earning earning = new Earning();
-        earning.setTotalEarnings(120.00);
-        earning.setTodayEarnings(10.00);
-        earning.setThisWeekEarnings(45.00);
-        earning.setThisMonthEarnings(120.00);
-        earning.setUserLevel("Eco Warrior");
-        earning.setProgressToNextLevel(75);
-        earning.setNextMilestone(500.00);
+        earning.setTotalEarnings(207.00); // Updated based on 207 total bottles
+        earning.setTodayEarnings(9.00);   // Based on Aug 25 data (9 bottles)
+        earning.setThisWeekEarnings(81.00); // Aug 22 + Aug 25 (65 + 9 + 7 buffer)
+        earning.setThisMonthEarnings(207.00); // Total for August
+        earning.setUserLevel("Eco Champion"); // Upgraded level due to increased activity
+        earning.setProgressToNextLevel(85); // Higher progress due to more bottles
+        earning.setNextMilestone(300.00);
         return earning;
     }
     
@@ -79,15 +79,15 @@ public class HomeDataUtils {
         notifications.add(new NotificationItem(
             "notif_1",
             "Earnings Update",
-            "₱10.00 credited for today's recycling!",
+            "₱9.00 credited for today's recycling (9 bottles)!",
             dateTime.getFormattedTime(),
             false
         ));
         
         notifications.add(new NotificationItem(
             "notif_2",
-            "Milestone Reached",
-            "Congratulations! You've reached ₱100 total earnings!",
+            "Level Up Achievement",
+            "Congratulations! You've reached Eco Champion level with 207+ bottles!",
             dateTime.getFormattedTime(),
             true
         ));
@@ -162,7 +162,7 @@ public class HomeDataUtils {
     public static void showWelcomeMessage(Context context, Earning earning) {
         String message = "Welcome back! ";
         
-        if (earning.getTotalEarnings() >= 500) {
+        if (earning.getTotalEarnings() >= 200) {
             message += "You're an Eco Champion! 🌟";
         } else if (earning.getTotalEarnings() >= 100) {
             message += "Great job recycling! 🌱";

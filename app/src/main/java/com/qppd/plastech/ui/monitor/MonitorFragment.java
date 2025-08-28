@@ -92,8 +92,8 @@ public class MonitorFragment extends Fragment {
         // Initialize dummy data generator
         dummyDataGenerator = new DummyDataGenerator();
         
-        // Load August 22, 2025 data initially (aligned with updates fragment date range)
-        currentSelectedDate = "2025-08-22";
+        // Load August 25, 2025 data initially (aligned with latest updates fragment date range)
+        currentSelectedDate = "2025-08-25";
         loadDataForDate(currentSelectedDate);
         
         // Generate dummy data if needed (only once)
@@ -262,7 +262,7 @@ public class MonitorFragment extends Fragment {
                 @Override
                 public void onFailure(Exception e) {
                     // If no historical data, check if it's within August 2025 range and load current bin data
-                    String currentDate = "2025-08-22"; // Current demo date
+                    String currentDate = "2025-08-25"; // Current demo date
                     if (date.equals(currentDate)) {
                         loadCurrentBinData();
                     } else {
