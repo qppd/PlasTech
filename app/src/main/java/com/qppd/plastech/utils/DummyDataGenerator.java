@@ -35,8 +35,8 @@ public class DummyDataGenerator {
         List<BinHistoricalData> dataList = new ArrayList<>();
         Calendar calendar = Calendar.getInstance();
         
-        // Generate data for August 22-23, 2025 based on real transaction data
-        int[] augustDays = {22, 23};
+        // Generate data for August 20-27, 2025 based on real transaction data
+        int[] augustDays = {20, 21, 22, 25, 26, 27};
         
         for (int day : augustDays) {
             calendar.set(2025, Calendar.AUGUST, day);
@@ -57,30 +57,56 @@ public class DummyDataGenerator {
         
         int bottleLarge, bottleSmall, totalWeight, totalRewards;
         
-        if (dayOfMonth == 22) {
-            // August 22, 2025 data - 16 transactions
-            // Large bottles: 6 (9.5"x9", 9.5"x9", 10"x9", 9.4"x8", 9"x8.5", 9.5"x9", 9.8"x8.7")
-            // Small bottles: 10 (5"x5", 6.6"x6", 5.5"x5", 5.6"x5", 5.5"x5", 5"x5", 5"x5", 6.7"x5", 6.4"x5")
-            bottleLarge = 7; // 7 large bottles
-            bottleSmall = 9; // 9 small bottles
-            // Total weight: Large: 45+46+45+44+47+45+48 = 320g, Small: 15+17+15+18+16+16+15+17+18 = 147g
-            totalWeight = 467; // 320 + 147 = 467g
-            totalRewards = 16; // ₱1.00 each = ₱16.00
-        } else if (dayOfMonth == 23) {
-            // August 23, 2025 data - 13 transactions  
-            // Large bottles: 8 (9.5"x8", 9.5"x9", 10"x8", 8.4"x8", 9.5"x9", 9.9x8", 8.7x9")
-            // Small bottles: 5 (5"x5", 6.5'x5", 5.5"x5, 5.5"x5", 5.7"x5", 7.2"x6")
-            bottleLarge = 7; // 7 large bottles  
-            bottleSmall = 6; // 6 small bottles
-            // Total weight: Large: 40+43+39+36+44+45+43 = 290g, Small: 15+21+10+20+25+19 = 110g
-            totalWeight = 400; // 290 + 110 = 400g
-            totalRewards = 13; // ₱1.00 each = ₱13.00
-        } else {
-            // Fallback for other dates (shouldn't be used with current data)
-            bottleLarge = 5;
-            bottleSmall = 8;
-            totalWeight = 300;
-            totalRewards = 13;
+        switch (dayOfMonth) {
+            case 20:
+                // August 20, 2025 - 60 bottles (32 Small + 28 Large)
+                bottleLarge = 28;
+                bottleSmall = 32;
+                totalWeight = 2714; // Rounded from 2713.7g
+                totalRewards = 60;
+                break;
+            case 21:
+                // August 21, 2025 - 119 bottles (42 Small + 77 Large)
+                bottleLarge = 77;
+                bottleSmall = 42;
+                totalWeight = 5357; // Rounded from 5357.01g
+                totalRewards = 119;
+                break;
+            case 22:
+                // August 22, 2025 - 65 bottles (26 Small + 39 Large)
+                bottleLarge = 39;
+                bottleSmall = 26;
+                totalWeight = 2956; // Rounded from 2956.43g
+                totalRewards = 65;
+                break;
+            case 25:
+                // August 25, 2025 - 65 bottles (31 Small + 34 Large)
+                bottleLarge = 34;
+                bottleSmall = 31;
+                totalWeight = 3012; // Rounded from 3012.3g
+                totalRewards = 65;
+                break;
+            case 26:
+                // August 26, 2025 - 65 bottles (32 Small + 33 Large)
+                bottleLarge = 33;
+                bottleSmall = 32;
+                totalWeight = 3024; // Rounded from 3023.78g
+                totalRewards = 65;
+                break;
+            case 27:
+                // August 27, 2025 - 65 bottles (32 Small + 33 Large)
+                bottleLarge = 33;
+                bottleSmall = 32;
+                totalWeight = 3017; // Rounded from 3016.69g
+                totalRewards = 65;
+                break;
+            default:
+                // Fallback for other dates
+                bottleLarge = 5;
+                bottleSmall = 8;
+                totalWeight = 300;
+                totalRewards = 13;
+                break;
         }
         
         int totalBottles = bottleLarge + bottleSmall;
@@ -129,13 +155,13 @@ public class DummyDataGenerator {
     }
     
     public void generateTodaysData(DataGenerationCallback callback) {
-        // Generate data for August 23, 2025 (latest data from provided transactions)
-        String currentDate = "2025-08-23";
+        // Generate data for August 27, 2025 (latest data from provided transactions)
+        String currentDate = "2025-08-27";
         Calendar calendar = Calendar.getInstance();
-        calendar.set(2025, Calendar.AUGUST, 23);
+        calendar.set(2025, Calendar.AUGUST, 27);
         long timestamp = calendar.getTimeInMillis();
         
-        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 23);
+        BinHistoricalData todayData = generateDataForDate(currentDate, timestamp, 27);
         String key = "bin_history/" + currentDate;
         
         historicalDataHelper.save(key, todayData, new FirebaseRTDBHelper.DatabaseCallback() {
@@ -150,4 +176,5 @@ public class DummyDataGenerator {
             }
         });
     }
+}
 }

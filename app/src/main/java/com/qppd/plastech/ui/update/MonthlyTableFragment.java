@@ -43,27 +43,28 @@ public class MonthlyTableFragment extends Fragment {
             }
         });
 
-        List<String> headers = Arrays.asList("Period", "Overall Weight", "Total Bottles", "Total Rewards");
+        List<String> headers = Arrays.asList("Period", "Overall Weight", "Total Bottles");
         
         List<List<String>> cells = new ArrayList<>();
 
-        // Data based on actual plastic crushing records
-        // Aug 22: 9 Small (147g) + 7 Large (320g) = 16 bottles, 467g total, ₱16
-        // Aug 23: 6 Small (110g) + 7 Large (290g) = 13 bottles, 400g total, ₱13
-        // Total: 15 Small + 14 Large = 29 bottles, 867g total, ₱29
+        // Data based on actual plastic crushing records for August 20-27, 2025
+        // Total: 195 Small + 244 Large = 439 bottles across all days
         
         String[][] monthlyData = {
-            {"Aug 22, 2025", "467g", "16", "₱16"},
-            {"Aug 23, 2025", "400g", "13", "₱13"},
-            {"August 2025 Total", "867g", "29", "₱29"}
+            {"Aug 20, 2025", "2713.7g", "60"},
+            {"Aug 21, 2025", "5357.01g", "119"},
+            {"Aug 22, 2025", "2956.43g", "65"},
+            {"Aug 25, 2025", "3012.3g", "65"},
+            {"Aug 26, 2025", "3023.78g", "65"},
+            {"Aug 27, 2025", "3016.69g", "65"},
+            {"August 2025 Total", "20079.91g", "439"}
         };
         
         for (String[] monthData : monthlyData) {
             List<String> cellRow = Arrays.asList(
                     monthData[0], // Period
                     monthData[1], // Overall weight
-                    monthData[2], // Total bottles
-                    monthData[3]  // Total rewards
+                    monthData[2]  // Total bottles
             );
             cells.add(cellRow);
         }

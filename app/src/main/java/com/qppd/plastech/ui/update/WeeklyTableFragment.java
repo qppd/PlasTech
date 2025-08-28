@@ -15,6 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 import com.qppd.plastech.data.SharedRepository;
 
+
+
 public class WeeklyTableFragment extends Fragment {
     private TableView tableView;
     private final SharedRepository sharedRepository = SharedRepository.getInstance();
@@ -42,27 +44,26 @@ public class WeeklyTableFragment extends Fragment {
             }
         });
 
-        List<String> headers = Arrays.asList("Week", "Small Bottles", "Large Bottles", "Overall Weight", "Total Bottles", "Total Rewards");
+        List<String> headers = Arrays.asList("Date", "Small Bottles",
+                "Large Bottles", "Overall Weight", "Total Bottles");
 
         List<List<String>> cells = new ArrayList<>();
-        
-        // Data based on actual plastic crushing records for Aug 22-23, 2025
-        // Aug 22: 9 Small bottles (15g+17g+15g+18g+16g+16g+15g+17g+18g = 147g), 7 Large bottles (45g+46g+45g+44g+47g+45g+48g = 320g)
-        // Aug 23: 6 Small bottles (15g+21g+10g+20g+25g+19g = 110g), 7 Large bottles (40g+43g+39g+36g+44g+45g+43g = 290g)
-        
+
         String[][] weeklyData = {
-            {"Aug 19-25, 2025", "15", "14", "867g", "29", "₱29"},
-            {"Aug 26-31, 2025", "0", "0", "0g", "0", "₱0"}
-        };
+                {"Aug 20, 2025", "32", "28", "2713.7g", "60"},
+                {"Aug 21, 2025", "42", "77", "5357.01g", "119"},
+                {"Aug 22, 2025", "26", "39", "2956.43g", "65"},
+                {"Aug 25, 2025", "31", "34", "3012.3g", "65"},
+                {"Aug 26, 2025", "32", "33", "3023.78g", "65"},
+                {"Aug 27, 2025", "32", "33", "3016.69g", "65"}};
         
         for (String[] weekData : weeklyData) {
             List<String> cellRow = Arrays.asList(
-                    weekData[0], // Week period
+                    weekData[0], // Date
                     weekData[1], // Small bottles
                     weekData[2], // Large bottles
                     weekData[3], // Overall weight
-                    weekData[4], // Total bottles
-                    weekData[5]  // Total rewards
+                    weekData[4]  // Total bottles
             );
             cells.add(cellRow);
         }
